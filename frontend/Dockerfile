@@ -1,4 +1,4 @@
-# frontend/Dockerfile
+# Use the Node.js base image
 FROM node:18-alpine
 
 # Set the working directory
@@ -8,11 +8,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application
+# Copy the rest of the application code
 COPY . .
 
-# Expose frontend development server port
-EXPOSE 3000
+# No need to EXPOSE the port here
 
-# Start the application
+# Start the React development server
 CMD ["npm", "start"]

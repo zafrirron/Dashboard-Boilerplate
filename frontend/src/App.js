@@ -1,21 +1,16 @@
-// frontend/src/App.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // Replace Switch with Routes
+import HomePage from './pages/HomePage';
+import ItemsPage from './pages/ItemsPage';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/items`)
-      .then((response) => response.json())
-      .then((data) => setMessage(data.message))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
-
   return (
-    <div className="App">
-      <h1>React Frontend</h1>
-      <p>Backend Message: {message}</p>
-    </div>
+    <Router>
+      <Routes>  {/* Use Routes instead of Switch */}
+        <Route path="/" element={<HomePage />} />  {/* Use element prop instead of component */}
+        <Route path="/items" element={<ItemsPage />} />  {/* Same for ItemsPage */}
+      </Routes>
+    </Router>
   );
 }
 
