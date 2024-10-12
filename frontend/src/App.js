@@ -12,7 +12,7 @@ const getPageComponent = (pageName) => {
   //  console.error('Missing route key.');
   //}
   if (!pageName || pageName === undefined) {
-    console.error('Missing or undefined route key.');
+    //console.error('Missing or undefined route key.');
     return Component;
   }
   try {

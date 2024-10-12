@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const logger = require('../utils/logger');  // Import your standard logger
 const pool = require('../config/db');  // Import the database connection
+const { OAuth2Client } = require('google-auth-library');
+const User = require('../models/User');
 
 // Login function
 exports.login = async (req, res) => {
@@ -43,6 +45,42 @@ exports.login = async (req, res) => {
   } catch (error) {
     logger.error(`Login error for email: ${email}, error: ${error.message}`);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);  // Use the Google Client ID from the environment variables
+
+exports.googleLogin = async (req, res) => {
+  let { token } = req.body;
+  //logger.info(`Got google login request: ${token} `);
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,  // Specify the Google Client ID here
+    });
+
+    const { email, name } = ticket.getPayload();
+    logger.info(`Google login email: ${email} `);
+
+    // Check if the user already exists in your database
+    let user = await User.findByEmail(email);
+    if (!user || !user.active) {
+      // If the user doesn't exist, create a new user in the database
+      //user = await User.createUser({ email, name, role: 'user' }); // Adjust according to your model
+      logger.info(`User not found or not active email: ${email} `);
+      return res.status(401).json({ message: `User not found or not active ${email}` });
+    }
+
+    // Generate your own JWT token
+    token = jwt.sign({ name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    logger.info(`Successful google login for email: ${email} with role: ${user.role}`);
+
+    return res.status(200).json({ token });
+  } catch (error) {
+    return res.status(400).json({ message: 'Google login failed', error });
   }
 };
 

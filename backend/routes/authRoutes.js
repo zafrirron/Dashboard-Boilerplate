@@ -1,6 +1,11 @@
 const express = require('express');
 const authController = require('../controllers/authController');
 const router = express.Router();
+const { OAuth2Client } = require('google-auth-library');
+const jwt = require('jsonwebtoken');
+const { findOrCreateUser } = require('../controllers/userController'); // Implement this controller
+const pool = require('../config/db'); // PostgreSQL connection pool
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * @swagger
@@ -119,6 +124,29 @@ router.post('/logout', (req, res) => {
     }
   });
   
-  module.exports = router;
+/**
+ * @swagger
+ * /auth/google-login:
+ *   post:
+ *     summary: Google login
+ *     description: Authenticate users via Google OAuth.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Google OAuth token
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *       401:
+ *         description: Invalid token or authentication failed
+ */
+// POST route for Google login
+router.post('/google-login', authController.googleLogin);
   
 module.exports = router;

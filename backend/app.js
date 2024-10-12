@@ -31,7 +31,6 @@ app.use(express.json());  // Add middleware to parse JSON requests
 
 // Protect the /api-docs route using requireRole('apiDocs') from routesConfig.js
 app.use('/api/apidocs', requireRole('apiDocs'), swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-console.log('Role for swagger: ',requireRole('apiDocs'));
 // Routes
 const itemsRouter = require('./routes/itemsRoutes');
 const authRouter = require('./routes/authRoutes');  // Include auth routes

@@ -37,8 +37,7 @@ Here's an overview of the folder structure for this boilerplate:
 │   ├── Dockerfile
 │   └── package.json
 ├── db/
-│   ├── init.sql
-│   └── Dockerfile
+│   └── init.sql
 ├── common/
 │   └── routesConfig.js
 ├── docker-compose.yml

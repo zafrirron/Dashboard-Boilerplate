@@ -43,6 +43,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data  # Volume for persisting data
     env_file:
       - ./.env
     networks:
@@ -51,3 +52,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  postgres-data:

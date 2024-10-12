@@ -1,18 +1,24 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState('unlogged');
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+  
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('token');
+    setRole('unlogged');
+    setUserInfo({ name: '', email: '' });
+  }, []);
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
         const currentTime = Date.now() / 1000;
-        
+
         // Check if the token is expired
         if (decodedToken.exp && decodedToken.exp < currentTime) {
           handleLogout();  // Token expired, log the user out
@@ -28,11 +34,11 @@ export const AuthProvider = ({ children }) => {
         handleLogout(); // Invalid token, log out the user
       }
     }
-  };
+  }, [handleLogout]);  // Include handleLogout in the dependency array
 
   const handleGoogleLogin = async (googleResponse) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/auth/google-login`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/api/auth/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,16 +58,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setRole('unlogged');
-    setUserInfo({ name: '', email: '' });
-  };
-
   // Automatically check for the token on initial app load
   useEffect(() => {
     handleLogin();
-  }, []);
+  }, [handleLogin]);  // Include handleLogin in the dependency array
 
   return (
     <AuthContext.Provider value={{ role, setRole, userInfo, handleLogin, handleLogout, handleGoogleLogin }}>

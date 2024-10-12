@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, Avatar, CssBaseline, Divider, Collapse } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -70,7 +70,7 @@ const Layout = ({ children }) => {
       if (route.external && route.frontendVisible) {
         return (
           <ListItem
-            button
+            button="true"
             key={routeKey}
             onClick={() =>  window.open(route.url, '_blank')} // Open in a new tab
             sx={{ cursor: 'pointer' }}
@@ -84,7 +84,7 @@ const Layout = ({ children }) => {
       if (route.roles.includes(role) && route.frontendVisible) {
         return (
           <React.Fragment key={route.path}>
-            <ListItem button onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
+            <ListItem button="true" onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
               {IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>}
               {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
               {hasChildren && (openMenu[routeKey] ? <ExpandLess /> : <ExpandMore />)}
