@@ -1,112 +1,176 @@
 
-# React Express PostgreSQL Docker Boilerplate
+# React Express Postgres Docker Boilerplate
 
-This project is a boilerplate for building a web application using React for the frontend, Express for the backend, PostgreSQL as the database, and Docker for easy environment setup.
+## Project Overview
+
+This is a full-stack boilerplate application using React for the frontend, Express for the backend API, Postgres as the database, and Docker for containerization. The project is designed to be scalable, modular, and easy to set up for local development and deployment in Docker environments.
+
+## Table of Contents
+
+- [React Express Postgres Docker Boilerplate](#react-express-postgres-docker-boilerplate)
+  - [Project Overview](#project-overview)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Clone the repository:](#clone-the-repository)
+    - [Set up environment variables:](#set-up-environment-variables)
+    - [Run the application:](#run-the-application)
+    - [Access the application:](#access-the-application)
+  - [Usage](#usage)
+    - [Adding a User](#adding-a-user)
+    - [Authentication](#authentication)
+  - [Environment Variables](#environment-variables)
+  - [Docker Setup](#docker-setup)
+  - [User Management](#user-management)
+  - [API Documentation](#api-documentation)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Features
 
-- **Frontend**: React with MUI for UI components.
-- **Backend**: Express.js for building RESTful APIs.
-- **Database**: PostgreSQL for data storage.
-- **Authentication**: JWT-based authentication, including Google OAuth integration.
-- **User Management**: Built-in user management (add, update, delete users, and toggle user active state).
-- **Swagger Integration**: API documentation using Swagger.
-- **Docker Support**: Docker Compose setup for managing the frontend, backend, and database services.
-- **Role-Based Access Control (RBAC)**: Routes and UI visibility controlled based on user roles (`unlogged`, `logged`, `admin`).
+- **React** for the frontend.
+- **Express** backend with a modular structure.
+- **Postgres** as the database.
+- **Docker** setup for easy deployment and environment setup.
+- JWT authentication.
+- Role-based access control (RBAC).
+- Google OAuth integration for user authentication.
+- Swagger UI for API documentation.
 
-## Project Structure
-
-### Frontend Folder Structure:
-```
-frontend/
-├── public/
-│   └── assets/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   ├── context/
-│   ├── hooks/
-│   ├── utils/
-│   ├── styles/
-│   └── .env
-├── package.json
-└── README.md
-```
-
-### Backend Folder Structure:
-```
-backend/
-├── config/
-├── controllers/
-├── models/
-├── routes/
-├── middlewares/
-├── services/
-├── utils/
-├── docs/
-├── tests/
-├── .env
-├── app.js
-├── server.js
-├── package.json
-└── README.md
-```
-
-## Setup Instructions
+## Installation
 
 ### Prerequisites
 
-Make sure you have the following installed on your machine:
+Make sure you have the following installed on your local development machine:
 
-- [Node.js](https://nodejs.org/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [PostgreSQL](https://www.postgresql.org/)
+- Docker and Docker Compose
+- Node.js and npm
+- Git
 
-### Steps
+### Clone the repository:
 
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/your-repo/react-express-postgres-docker-boilerplate.git
-    ```
+```bash
+git clone <repository-url>
+cd react-express-postgres-docker-boilerplate
+```
 
-2. **Navigate to the project directory**:
-    ```bash
-    cd react-express-postgres-docker-boilerplate
-    ```
+### Set up environment variables:
 
-3. **Configure the environment variables**:
-    Create a `.env` file in the root of both the `frontend` and `backend` directories based on the `.env.example` files.
+1. Copy `.env.example` to `.env`:
 
-4. **Run the Docker services**:
-    ```bash
-    docker-compose up --build
-    ```
+```bash
+cp .env.example .env
+```
 
-5. **Access the application**:
-    - Frontend: [http://localhost:3000](http://localhost:3000)
-    - Backend API: [http://localhost:5000/api](http://localhost:5000/api)
-    - Swagger Docs: [http://localhost:5000/api-docs](http://localhost:5000/api-docs)
+2. Fill in the environment variables (for database, JWT secret, Google OAuth, etc.).
 
-### API Endpoints
+### Run the application:
 
-- `/auth/login`: User login.
-- `/auth/google-login`: Google OAuth login.
-- `/users`: CRUD operations for managing users.
-- `/api-docs`: Access the API documentation using Swagger UI.
+To start the app with Docker Compose:
 
-### Role-Based Access Control (RBAC)
+```bash
+docker-compose up --build
+```
 
-The routes and UI elements are visible based on the role of the logged-in user. The roles are:
+This will build and start the containers for the backend, frontend, and Postgres.
 
-- **Unlogged**: Default role for users who are not authenticated.
-- **Logged**: Role for authenticated users.
-- **Admin**: Role for administrators who have access to advanced functionality such as user management and API docs.
+### Access the application:
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
+- Swagger API docs: http://localhost:5000/api/docs
+
+## Usage
+
+### Adding a User
+
+The project includes user management functionality, where you can:
+
+- Create users.
+- Assign roles.
+- Enable/disable user accounts.
+  
+You can access the User Management page from the admin panel after logging in with admin privileges.
+
+### Authentication
+
+The app uses JWT for authentication. On successful login (with credentials or Google OAuth), a JWT token is saved in local storage. The token is used to make authenticated API requests.
+
+## Environment Variables
+
+Here are the main environment variables required for the app to run:
+
+```bash
+# Backend
+BACKEND_HOST=localhost
+BACKEND_PORT=5000
+JWT_SECRET=your-jwt-secret
+
+# Frontend
+FRONTEND_HOST=localhost
+FRONTEND_PORT=3000
+
+# Database
+DB_HOST=db
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=password
+DB_NAME=your_db_name
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
+
+## Docker Setup
+
+The project uses Docker Compose to orchestrate the frontend, backend, and Postgres database in different containers.
+
+To build and run all containers:
+
+```bash
+docker-compose up --build
+```
+
+To stop and remove all containers:
+
+```bash
+docker-compose down
+```
+
+To run the containers in the background:
+
+```bash
+docker-compose up -d
+```
+
+## User Management
+
+The project includes a full-featured user management module:
+
+- **Roles**: Unlogged, Logged, Admin
+- **Features**: Add, edit, delete users, toggle active/inactive status, and role-based access control.
+
+The admin can manage users through the UI after logging in as an admin.
+
+## API Documentation
+
+Swagger UI is used for API documentation. After starting the app, access the docs at:
+
+```
+http://localhost:5000/api/docs
+```
 
 ## Contributing
 
-Feel free to submit issues, fork the repository, and send pull requests!
+Pull requests are welcome! Please adhere to the following process:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
+4. Push to your branch (`git push origin feature-branch`).
+5. Open a pull request.
 
 ## License
 
