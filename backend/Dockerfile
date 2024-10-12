@@ -4,16 +4,18 @@ FROM node:18-alpine
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to install dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install Node.js dependencies
 RUN npm install
 
-# Copy the rest of the application code
-COPY . .
+# Copy the backend code
+COPY . .  
+# Only copy backend files
 
-# No need to EXPOSE the port, as Docker Compose will handle this
+# Expose the backend port
+EXPOSE ${BACKEND_PORT}
 
-# Start the backend service
+# Start the backend server
 CMD ["npm", "start"]

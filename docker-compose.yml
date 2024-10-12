@@ -6,6 +6,8 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     volumes:
       - ./backend:/usr/src/app
+      - ./backend/logs:/usr/src/app/logs
+      - ./common:/usr/src/common
     env_file:
       - ./.env
     networks:
@@ -20,15 +22,17 @@ services:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     volumes:
       - ./frontend:/usr/src/app
+      - ./common:/usr/src/common  # Mount the common folder
     env_file:
       - ./.env
     environment:
-      # Pass the backend URL as an environment variable
-      REACT_APP_BACKEND_API_URL: ${BACKEND_API_URL}  # Use the project-level variable
+      REACT_APP_BACKEND_API_URL: ${BACKEND_API_URL}
     networks:
       - app-network
     depends_on:
       - backend
+    command: /bin/sh -c "[ ! -L /usr/src/app/src/common ] && ln -s /usr/src/common /usr/src/app/src/common || true && npm install && npm start"
+
   db:
     image: postgres:13-alpine
     ports:
@@ -36,7 +40,6 @@ services:
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
-      #POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -44,6 +47,7 @@ services:
       - ./.env
     networks:
       - app-network
+
 networks:
   app-network:
     driver: bridge

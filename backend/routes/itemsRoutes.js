@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db');  // Import the database connection
+const pool = require('../config/db');
+const requireRole = require('../middlewares/requireRole');
+const routesConfig = require('/usr/src/common/routesConfig');  // Correct path to the shared config
 
 /**
  * @swagger
@@ -34,12 +36,9 @@ const pool = require('../config/db');  // Import the database connection
  *                         type: string
  *                         example: "This is an item description"
  */
-router.get('/', async (req, res) => {
+router.get('/', requireRole('items'), async (req, res) => {
   try {
-    // Query to fetch all items from the "items" table
     const result = await pool.query('SELECT id, name, description FROM items');
-    
-    // Respond with the fetched data
     res.json({ message: 'Data fetched successfully', data: result.rows });
   } catch (err) {
     console.error('Error fetching items:', err.message);
