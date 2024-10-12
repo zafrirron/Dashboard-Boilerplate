@@ -1,70 +1,113 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React Express PostgreSQL Docker Boilerplate
 
-## Available Scripts
+This project is a boilerplate for building a web application using React for the frontend, Express for the backend, PostgreSQL as the database, and Docker for easy environment setup.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Frontend**: React with MUI for UI components.
+- **Backend**: Express.js for building RESTful APIs.
+- **Database**: PostgreSQL for data storage.
+- **Authentication**: JWT-based authentication, including Google OAuth integration.
+- **User Management**: Built-in user management (add, update, delete users, and toggle user active state).
+- **Swagger Integration**: API documentation using Swagger.
+- **Docker Support**: Docker Compose setup for managing the frontend, backend, and database services.
+- **Role-Based Access Control (RBAC)**: Routes and UI visibility controlled based on user roles (`unlogged`, `logged`, `admin`).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Frontend Folder Structure:
+```
+frontend/
+├── public/
+│   └── assets/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── context/
+│   ├── hooks/
+│   ├── utils/
+│   ├── styles/
+│   └── .env
+├── package.json
+└── README.md
+```
 
-### `npm test`
+### Backend Folder Structure:
+```
+backend/
+├── config/
+├── controllers/
+├── models/
+├── routes/
+├── middlewares/
+├── services/
+├── utils/
+├── docs/
+├── tests/
+├── .env
+├── app.js
+├── server.js
+├── package.json
+└── README.md
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Setup Instructions
 
-### `npm run build`
+### Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Make sure you have the following installed on your machine:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- [Node.js](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [PostgreSQL](https://www.postgresql.org/)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Steps
 
-### `npm run eject`
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/your-repo/react-express-postgres-docker-boilerplate.git
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **Navigate to the project directory**:
+    ```bash
+    cd react-express-postgres-docker-boilerplate
+    ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Configure the environment variables**:
+    Create a `.env` file in the root of both the `frontend` and `backend` directories based on the `.env.example` files.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **Run the Docker services**:
+    ```bash
+    docker-compose up --build
+    ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+5. **Access the application**:
+    - Frontend: [http://localhost:3000](http://localhost:3000)
+    - Backend API: [http://localhost:5000/api](http://localhost:5000/api)
+    - Swagger Docs: [http://localhost:5000/api-docs](http://localhost:5000/api-docs)
 
-## Learn More
+### API Endpoints
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `/auth/login`: User login.
+- `/auth/google-login`: Google OAuth login.
+- `/users`: CRUD operations for managing users.
+- `/api-docs`: Access the API documentation using Swagger UI.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Role-Based Access Control (RBAC)
 
-### Code Splitting
+The routes and UI elements are visible based on the role of the logged-in user. The roles are:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Unlogged**: Default role for users who are not authenticated.
+- **Logged**: Role for authenticated users.
+- **Admin**: Role for administrators who have access to advanced functionality such as user management and API docs.
 
-### Analyzing the Bundle Size
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Feel free to submit issues, fork the repository, and send pull requests!
 
-### Making a Progressive Web App
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.
