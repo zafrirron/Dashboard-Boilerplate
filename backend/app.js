@@ -5,8 +5,18 @@ const swaggerDocs = require('./config/swaggerConfig');  // Swagger documentation
 const requireRole = require('./middlewares/requireRole');  // Import role middleware
 const routesConfig = require('/usr/src/common/routesConfig');  // Import centralized config
 require('dotenv').config();  // Load environment variables
+const cookieParser = require('cookie-parser'); // Import cookie-parser
+const bodyParser = require('body-parser');
 
 const app = express();
+
+// Add cookie-parser middleware
+app.use(cookieParser());
+
+// Other middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const PORT = process.env.BACKEND_PORT || 5000;
 const HOST = '0.0.0.0';  // Accept connection from all containers
 const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';  // Load allowed origin from .env
@@ -20,8 +30,8 @@ app.use(cors({
 app.use(express.json());  // Add middleware to parse JSON requests
 
 // Protect the /api-docs route using requireRole('apiDocs') from routesConfig.js
-app.use('/api-docs', requireRole('apiDocs'), swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
+app.use('/api/apidocs', requireRole('apiDocs'), swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+console.log('Role for swagger: ',requireRole('apiDocs'));
 // Routes
 const itemsRouter = require('./routes/itemsRoutes');
 const authRouter = require('./routes/authRoutes');  // Include auth routes
@@ -30,6 +40,7 @@ const adminRouter = require('./routes/adminRoutes');  // Include the new admin r
 app.use('/api/items', itemsRouter);
 app.use('/api/auth', authRouter);  // Add auth routes
 app.use('/api/admin', adminRouter);  // Register the admin routes
+app.use('/api/profile', authRouter);  // Register the admin routes
 
 // Start the server using the host and port from environment variables
 app.listen(PORT, HOST, () => {

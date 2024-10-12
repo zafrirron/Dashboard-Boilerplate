@@ -5,26 +5,17 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
 import routesConfig from '../common/routesConfig';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const drawerWidth = 240;
 const collapsedWidth = 100;
 
-const Layout = ({ role, setRole, children }) => {
+const Layout = ({ children }) => {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State for dropdown menu
   const [openMenu, setOpenMenu] = useState({}); // Track which menu items are expanded
-
-  // Recalculate role on login/logout or when the token changes
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setRole('unlogged');
-    } else {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      setRole(decodedToken.role || 'unlogged');
-    }
-  }, [setRole]);
+  const { role, userInfo, setRole } = useAuth();  // Add userInfo
 
   // Toggle menu open/close state
   const handleToggleMenu = (menuKey) => {
@@ -34,24 +25,12 @@ const Layout = ({ role, setRole, children }) => {
     }));
   };
 
-  // Get user info from the JWT token
-  const getUserInfo = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return { name: '', email: '' };
-    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-    return {
-      name: decodedToken.name || 'User',
-      email: decodedToken.email || 'user@example.com',
-    };
-  };
-
-  const { name, email } = getUserInfo(); // Extract user info from JWT token
-
   const handleToggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   const handleNavigation = (path) => {
+    //console.log(`Navigate to: ${path}`);
     navigate(path);
   };
 
@@ -71,13 +50,37 @@ const Layout = ({ role, setRole, children }) => {
   };
 
   const renderMenuItems = (routes) => {
-    if (!routes || typeof routes !== 'object') return null; // Safeguard to avoid undefined or null
+    //console.log(`routes: ${JSON.stringify(routes)}`);
+    if (!routes || typeof routes !== 'object') return null;
+  
+      // Set the cookie properly
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Set 'secure' flag only when running on HTTPS
+      const secureFlag = window.location.protocol === 'https:' ? 'secure;' : '';
+      document.cookie = `token=${token}; path=/; ${secureFlag} SameSite=Lax`;
+    }
 
     return Object.keys(routes).map((routeKey) => {
       const route = routes[routeKey];
       const IconComponent = route?.icon;
       const hasChildren = route?.children && typeof route.children === 'object';
 
+      // Check if the route is an external link
+      if (route.external && route.frontendVisible) {
+        return (
+          <ListItem
+            button
+            key={routeKey}
+            onClick={() =>  window.open(route.url, '_blank')} // Open in a new tab
+            sx={{ cursor: 'pointer' }}
+          >
+            {IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>}
+            {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
+          </ListItem>
+        );
+      }
+  
       if (route.roles.includes(role) && route.frontendVisible) {
         return (
           <React.Fragment key={route.path}>
@@ -86,7 +89,6 @@ const Layout = ({ role, setRole, children }) => {
               {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
               {hasChildren && (openMenu[routeKey] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
-            {/* Render children as a collapsible list */}
             {hasChildren && (
               <Collapse in={openMenu[routeKey]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
@@ -100,7 +102,7 @@ const Layout = ({ role, setRole, children }) => {
       return null;
     });
   };
-
+  
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -125,7 +127,7 @@ const Layout = ({ role, setRole, children }) => {
           {role !== 'unlogged' && (
             <>
               <IconButton color="inherit" onClick={handleMenuClick}>
-                <Avatar>{name.charAt(0).toUpperCase()}</Avatar> {/* Display the first letter of the user's name */}
+                <Avatar>{userInfo.name.charAt(0).toUpperCase()}</Avatar> {/* Display the first letter of the user's name */}
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
@@ -134,10 +136,10 @@ const Layout = ({ role, setRole, children }) => {
               >
                 {/* User Info */}
                 <MenuItem disabled>
-                  <Typography variant="subtitle1">{name}</Typography>
+                  <Typography variant="subtitle1">{userInfo.name}</Typography>
                 </MenuItem>
                 <MenuItem disabled>
-                  <Typography variant="body2">{email}</Typography>
+                  <Typography variant="body2">{userInfo.email}</Typography>
                 </MenuItem>
                 <Divider />
                 {/* Action Links */}

@@ -91,6 +91,10 @@ router.post('/logout', (req, res) => {
  */
   router.get('/profile', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      token = req.cookies.token; // Fallback to token from cookies if not in headers
+    }
   
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });

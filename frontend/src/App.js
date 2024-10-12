@@ -1,64 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';  
-import { GoogleOAuthProvider } from '@react-oauth/google';  // Import GoogleOAuthProvider
-import HomePage from './pages/HomePage';
-import ItemsPage from './pages/ItemsPage';
-import LoginPage from './pages/LoginPage';
-import UserManagementPage from './pages/UserManagementPage';
-import Layout from './components/Layout';  // Import the Layout component
+import React, { Suspense, useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
 import routesConfig from './common/routesConfig';
+import { AuthProvider, AuthContext } from './context/AuthContext'; // Import AuthProvider and AuthContext
 
-function App() {
-  const [role, setRole] = useState('unlogged');
+// Function to load the page dynamically based on the `page` field in routesConfig
+const getPageComponent = (pageName) => {
+  //console.log(`Page requested: ${pageName}`)
+  let Component = React.lazy(() => import('./pages/DefaultPage'));
+  //if (!pageName) {
+  //  console.error('Missing route key.');
+  //}
+  if (!pageName || pageName === undefined) {
+    console.error('Missing or undefined route key.');
+    return Component;
+  }
+  try {
+    Component = React.lazy(() => import(`./pages/${pageName}`));
+  } catch (error) {
+    console.error(`Component not found for route: ${pageName}, loading DefaultPage.`);
+  }
+  return Component;
+};
 
-  // Function to get the user role from JWT stored in localStorage
-  const getRoleFromToken = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return 'unlogged';
-    try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      return decodedToken.role || 'unlogged';
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return 'unlogged';
-    }
-  };
+// Function to render a route based on the configuration
+const renderRoute = (route, role) => {
+  if (!route.roles.includes(role)) {
+    return null; // Role-based access control
+  }
 
-  // Update role whenever the app loads or localStorage token changes
-  useEffect(() => {
-    const roleFromToken = getRoleFromToken();
-    setRole(roleFromToken);
-  }, []);
-
-  // Function to render the correct route based on the user's role
-  const renderRoute = (Component, routeKey) => {
-    const route = routesConfig.routes[routeKey];
-    if (route.roles.includes(role)) {
-      return <Component />;
-    }
-    return <Navigate to={route.roles.includes('unlogged') ? '/login' : '/'} />;
-  };
-
-  // Redirect to home after successful login
-  const handleLogin = () => {
-    const roleFromToken = getRoleFromToken();
-    setRole(roleFromToken); // Update role after login
-  };
+  const Component = getPageComponent(route.page);
+  //if (!Component) {
+  //  return null;
+  //}
 
   return (
-    <GoogleOAuthProvider clientId={process.env.RACT_APP_GOOGLE_CLIENT_ID}> {/* GoogleOAuthProvider added */}
-      <Router>
-        <Layout role={role} setRole={setRole}>  {/* Pass setRole to Layout */}
-          <Routes>
-            <Route path="/" element={renderRoute(HomePage, 'home')} />
-            <Route path="/items" element={renderRoute(ItemsPage, 'items')} />
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />  {/* Pass handleLogin to LoginPage */}
-            <Route path="/admin/user-management" element={<UserManagementPage />} />  {/* User Management route */}
-          </Routes>
-        </Layout>
-      </Router>
-    </GoogleOAuthProvider>
+    <Route
+      key={route.path}
+      path={route.path}
+      element={
+        <Suspense fallback={<div>Loading...</div>}>
+          <Component />
+        </Suspense>
+      }
+    />
   );
-}
+};
 
-export default App;
+// Recursive function to generate routes
+const generateRoutes = (routes, role) => {
+  return Object.keys(routes).map((routeKey) => {
+    const route = routes[routeKey];
+    if (!route.key) {
+      route.key = routeKey;
+    }
+    if (route.children) {
+      return generateRoutes(route.children, role);
+    }
+    return renderRoute(route, role);
+  });
+};
+
+// Named function for App
+const App = () => {
+  const { role } = useContext(AuthContext); // Get the current role from AuthContext
+
+  return (
+    <Router>
+      <Layout role={role}>
+        <Routes>
+          {generateRoutes(routesConfig.routes, role)}
+        </Routes>
+      </Layout>
+    </Router>
+  );
+};
+
+// Wrap the App component with AuthProvider here
+const WrappedApp = () => (
+  <AuthProvider>
+    <App />
+  </AuthProvider>
+);
+
+export default WrappedApp;

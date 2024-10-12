@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Box, Typography, Container, CssBaseline, Avatar } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
+  const { handleLogin, handleGoogleLogin } = useContext(AuthContext); // Use the context functions
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -20,7 +22,7 @@ const LoginPage = ({ onLogin }) => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -31,7 +33,7 @@ const LoginPage = ({ onLogin }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('token', data.token);  // Store JWT token
-          onLogin();  // Update role in App.js
+          handleLogin();  // Use context function to update the role
           navigate('/');  // Redirect to home page
         } else {
           formik.setErrors({ serverError: 'Invalid credentials. Please try again.' });
@@ -41,30 +43,6 @@ const LoginPage = ({ onLogin }) => {
       }
     },
   });
-
-  // Handle Google login success
-  const handleGoogleLogin = async (googleResponse) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/google-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token: googleResponse.credential }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);  // Store JWT token
-        onLogin();  // Update role in App.js
-        navigate('/');  // Redirect to home page
-      } else {
-        console.log('Failed to login with Google.');
-      }
-    } catch (err) {
-      console.error('Google login error:', err);
-    }
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -135,7 +113,7 @@ const LoginPage = ({ onLogin }) => {
         </Typography>
 
         <GoogleLogin
-          onSuccess={handleGoogleLogin}
+          onSuccess={handleGoogleLogin}  // Use context for Google login
           onError={() => console.log('Google Login Failed')}
         />
       </Box>

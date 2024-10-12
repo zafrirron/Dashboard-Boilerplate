@@ -2,18 +2,43 @@ const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
 const routesConfig = require('/usr/src/common/routesConfig');  // Use the common routes config
 
+const findRouteByKey = (routes, routeKey) => {
+  // Search through top-level routes
+  if (routes[routeKey]) {
+    return routes[routeKey];
+  }
+
+  // Recursively search through child routes
+  for (const key in routes) {
+    if (routes[key].children) {
+      const childRoute = findRouteByKey(routes[key].children, routeKey);
+      if (childRoute) {
+        return childRoute;
+      }
+    }
+  }
+
+  return null; // Return null if the route is not found
+};
+
 const requireRole = (routeKey) => {
   return (req, res, next) => {
-    const route = routesConfig.routes[routeKey];
+    const route = findRouteByKey(routesConfig.routes, routeKey); 
     if (!route) {
       logger.error(`Route ${routeKey} is not defined in routesConfig`);
       return res.status(500).json({ message: 'Server error' });
     }
 
-    const token = req.headers.authorization?.split(' ')[1];
+    let token = req.headers.authorization?.split(' ')[1];
 
     if (route.roles.includes('unlogged')) {
       return next();  // Allow unlogged users
+    }
+
+    if (!token && req.cookies && req.cookies.token) {
+      token = req.cookies.token; // Assuming your cookie is named "token"
+    } else {
+      logger.info(`No cookie for : ${JSON.stringify(req.route)}`);
     }
 
     if (!token) {

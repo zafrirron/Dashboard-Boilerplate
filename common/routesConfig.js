@@ -9,12 +9,13 @@ if (typeof window !== 'undefined') {
   const ExitToAppIcon = require('@mui/icons-material/ExitToApp').default;
   const AdminPanelSettingsIcon = require('@mui/icons-material/AdminPanelSettings').default;
   const GroupIcon = require('@mui/icons-material/Group').default;
+  const ApiIcon = require('@mui/icons-material/Api').default;  // Swagger icon
 
   icons = {
     home: HomeIcon,
     login: AccountCircleIcon,
     items: ListIcon,
-    apiDocs: DashboardIcon,
+    apiDocs: ApiIcon,  // Swagger icon
     dashboard: DashboardIcon,
     logout: ExitToAppIcon,
     admin: AdminPanelSettingsIcon,
@@ -29,6 +30,7 @@ module.exports = {
       roles: ['unlogged', 'logged', 'admin'],
       frontendVisible: true,
       icon: icons.home ? icons.home : null,
+      page: 'HomePage',
       children: null,
     },
     login: {
@@ -36,6 +38,7 @@ module.exports = {
       roles: ['unlogged'],
       frontendVisible: true,
       icon: icons.login ? icons.login : null,
+      page: 'LoginPage',
       children: null,
     },
     items: {
@@ -43,13 +46,7 @@ module.exports = {
       roles: ['admin'],
       frontendVisible: true,
       icon: icons.items ? icons.items : null,
-      children: null,
-    },
-    apiDocs: {
-      path: '/api-docs',
-      roles: ['admin'],
-      frontendVisible: false,
-      icon: icons.apiDocs ? icons.apiDocs : null,
+      page: 'ItemsPage',
       children: null,
     },
     dashboard: {
@@ -60,13 +57,14 @@ module.exports = {
       children: {
         reports: {
           path: '/dashboard/reports',
-          roles: ['admin'],
+          roles: ['logged', 'admin'],
           frontendVisible: true,
           icon: icons.items ? icons.items : null,
+          page: 'DefaultPage',
         },
         settings: {
           path: '/dashboard/settings',
-          roles: ['admin'],
+          roles: ['logged', 'admin'],
           frontendVisible: true,
           icon: icons.items ? icons.items : null,
         },
@@ -83,6 +81,14 @@ module.exports = {
           roles: ['admin'],
           frontendVisible: true,
           icon: icons.userManagement ? icons.userManagement : null,
+          page: 'UserManagementPage',
+        },
+        apiDocs: {  
+          external: true,  // New attribute to indicate it's an external link
+          url: 'http://localhost:5000/api/apidocs',  // External URL to open
+          roles: ['admin'],
+          frontendVisible: true,
+          icon: icons.apiDocs ? icons.apiDocs : null,
         },
       },
     },
@@ -94,10 +100,11 @@ module.exports = {
       children: null,
     },
     profile: {
-        path: '/profile',
-        roles: ['logged', 'admin'],
-        frontendVisible: false,
-        icon: null,
+      path: '/profile',
+      roles: ['logged'],
+      frontendVisible: true,
+      icon: null,
+      page: 'UserProfilePage',
     },
   },
 };
