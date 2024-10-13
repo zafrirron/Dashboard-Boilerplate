@@ -1,29 +1,3 @@
-let icons = {};
-
-// Load icons only in the frontend (browser)
-if (typeof window !== 'undefined') {
-  const HomeIcon = require('@mui/icons-material/Home').default;
-  const ListIcon = require('@mui/icons-material/List').default;
-  const DashboardIcon = require('@mui/icons-material/Dashboard').default;
-  const AccountCircleIcon = require('@mui/icons-material/AccountCircle').default;
-  const ExitToAppIcon = require('@mui/icons-material/ExitToApp').default;
-  const AdminPanelSettingsIcon = require('@mui/icons-material/AdminPanelSettings').default;
-  const GroupIcon = require('@mui/icons-material/Group').default;
-  const ApiIcon = require('@mui/icons-material/Api').default;  // Swagger icon
-  const ProfileIcon = require('@mui/icons-material/Info').default;
-
-  icons = {
-    home: HomeIcon,
-    login: AccountCircleIcon,
-    items: ListIcon,
-    apiDocs: ApiIcon,  // Swagger icon
-    dashboard: DashboardIcon,
-    logout: ExitToAppIcon,
-    admin: AdminPanelSettingsIcon,
-    userManagement: GroupIcon,
-    profile: ProfileIcon,
-  };
-}
 
 module.exports = {
   routes: {
@@ -31,7 +5,7 @@ module.exports = {
       path: '/',
       roles: ['unlogged', 'logged'],
       frontendVisible: true,
-      icon: icons.home ? icons.home : null,
+      icon: 'Home',
       page: 'HomePage',
       children: null,
     },
@@ -39,7 +13,7 @@ module.exports = {
       path: '/login',
       roles: ['unlogged'],
       frontendVisible: true,
-      icon: icons.login ? icons.login : null,
+      icon: 'Login',
       page: 'LoginPage',
       children: null,
     },
@@ -47,7 +21,7 @@ module.exports = {
       path: '/items',
       roles: ['admin'],
       frontendVisible: true,
-      icon: icons.items ? icons.items : null,
+      icon: 'List',
       page: 'ItemsPage',
       children: null,
     },
@@ -55,20 +29,20 @@ module.exports = {
       path: '/dashboard',
       roles: ['logged'],
       frontendVisible: true,
-      icon: icons.dashboard ? icons.dashboard : null,
+      icon: 'Dashboard',
       children: {
         reports: {
           path: '/dashboard/reports',
           roles: ['logged', 'admin'],
           frontendVisible: true,
-          icon: icons.items ? icons.items : null,
+          icon: 'ListAlt',
           page: 'DefaultPage',
         },
         settings: {
           path: '/dashboard/settings',
           roles: ['logged', 'admin'],
           frontendVisible: true,
-          icon: icons.items ? icons.items : null,
+          icon: 'SettingsOverscan',
         },
       },
     },
@@ -76,13 +50,13 @@ module.exports = {
       path: '/admin',
       roles: ['admin'],
       frontendVisible: true,
-      icon: icons.admin ? icons.admin : null,
+      icon: 'AdminPanelSettings',
       children: {
         userManagement: {
           path: '/admin/user-management',
           roles: ['admin'],
           frontendVisible: true,
-          icon: icons.userManagement ? icons.userManagement : null,
+          icon: 'GroupAdd',
           page: 'UserManagementPage',
         },
         apiDocs: {  
@@ -90,7 +64,14 @@ module.exports = {
           url: 'http://localhost:5000/api/apidocs',  // External URL to open
           roles: ['admin'],
           frontendVisible: true,
-          icon: icons.apiDocs ? icons.apiDocs : null,
+          icon: 'Api',
+        },
+        pgAdmin: {
+          url: 'http://localhost:5050', // URL for pgAdmin
+          external: true,
+          frontendVisible: true,
+          roles: ['admin'],
+          icon: 'Storage',
         },
       },
     },
@@ -98,7 +79,7 @@ module.exports = {
       path: '/profile',
       roles: ['logged'],
       frontendVisible: false,
-      icon: icons.profile ? icons.profile : null,
+      icon: 'AccountBox',
       page: 'UserProfilePage',
       children: null,
     },
@@ -106,7 +87,7 @@ module.exports = {
       path: '/logout',
       roles: ['logged'],
       frontendVisible: false,
-      icon: icons.logout ? icons.logout : null,
+      icon: 'Logout',
       children: null,
     },
   },

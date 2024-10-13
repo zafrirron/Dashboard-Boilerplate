@@ -49,6 +49,23 @@ services:
     networks:
       - app-network
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+      - ./pgadmin-data/sessions:/var/lib/pgadmin/sessions
+      - ./pgadmin-data/servers.json:/pgadmin4/servers.json
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

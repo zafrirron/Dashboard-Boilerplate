@@ -31,6 +31,9 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
 - **PostgreSQL with Migrations and Seeding**: 
   - The project uses **PostgreSQL** as the database, and includes support for migrations and seeding for easy database setup and management.
 
+- **PGAdmin**: 
+  - The project uses **PGAdmin** as the database management tool.
+
 - **Customizable API and Swagger Documentation**:
   - Built-in support for **Swagger API documentation** for every route, allowing for clear API documentation and testing.
 
@@ -56,6 +59,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
   
 - **Database**: 
   - PostgreSQL with support for migrations and seeding.
+  - PGAdmin Postgress db managment Frontend
   
 - **Authentication**:
   - Email/password login with hashed credentials.
@@ -81,6 +85,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
    
     ```
     # .env file
+    # Backend Frontend params
     REACT_APP_APP_NAME=React Express PG Boilerplate
     REACT_APP_TOKEN_EXPIRY_TIME=3600
     BACKEND_HOST=localhost
@@ -89,18 +94,30 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     FRONTEND_PORT=3000
     CORS_ORIGIN=http://${FRONTEND_HOST}:${FRONTEND_PORT}
     BACKEND_API_URL=http://${BACKEND_HOST}:${BACKEND_PORT}
+
+    # DB params
     POSTGRES_PASSWORD=superuserpassword
     DB_HOST=db
     DB_PORT=5432
     DB_NAME=your_db_name
     DB_USER=your_db_user
     DB_PASSWORD=your_db_password
+
+    # tokens and google auth params
     JWT_SECRET=your_jwt_secret
     GOOGLE_CLIENT_ID=your_google_client_id
     EACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+    # Nod params
     NODE_ENV=development
+
+    # Logger params
     LOG_LEVEL=info  # error, warn, info, http, verbode, debug, silly
+
+    # PGAdmin params 
+    PGADMIN_EMAIL=pgpadmin@email.com
+    PGADMIN_PASSWORD=pgpadminpassword
 
     ```
 
@@ -154,8 +171,10 @@ Here's an overview of the folder structure for this boilerplate:
 │   └── package.json
 ├── db/
 │   └── init.sql
+├── pgadmin-data/
 ├── common/
 │   └── routesConfig.js
+├── scripts/
 ├── docker-compose.yml
 ├── README.md
 └── .env
@@ -172,11 +191,17 @@ The `docker-compose.yml` file is in the root directory and manages the following
 1. **Frontend**: React app served by Nginx.
 2. **Backend**: Express app running on Node.js.
 3. **Database**: PostgreSQL with initialized scripts from the `db/init.sql` file.
+4. **DB Managemnt**: PGAdmin db managment tool.
 
 ### Running the Application
 
 To build and start the containers, run:
 
+Pgadmin db server registration script (one time)
+```bash
+bash ./scripts/generate_servers_json.sh
+```
+Docker Compose 
 ```bash
 docker-compose up --build
 ```
@@ -223,20 +248,20 @@ module.exports = {
       path: '/',
       roles: ['unlogged', 'logged', 'admin'],
       frontendVisible: true,
-      icon: icons.home ? icons.home : null,
+      icon: 'Home',
       page: 'HomePage',
     },
     admin: {
       path: '/admin',
       roles: ['admin'],
       frontendVisible: true,
-      icon: icons.admin ? icons.admin : null,
+      icon: 'AdminPanelSettings',
       children: {
         userManagement: {
           path: '/admin/user-management',
           roles: ['admin'],
           frontendVisible: true,
-          icon: icons.userManagement ? icons.userManagement : null,
+          icon: 'GroupAdd',
           page: 'UserManagementPage',
         },
       },
@@ -257,7 +282,7 @@ myNewPage: {
   path: '/my-new-page',
   roles: ['logged', 'admin'],
   frontendVisible: true,
-  icon: icons.newPage ? icons.newPage : null,
+  icon:'MUIIconName',
   page: 'MyNewPage',
 },
 ```

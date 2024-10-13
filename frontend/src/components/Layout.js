@@ -6,9 +6,18 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
 import routesConfig from '../common/routesConfig';
 import { useAuth } from '../context/AuthContext'; // Import useAuth
+import * as Icons from '@mui/icons-material'; // Import all MUI icons
 
 const drawerWidth = 240;
 const collapsedWidth = 100;
+
+const DynamicIcon = ({ iconName }) => {
+  const IconComponent = Icons[iconName]; // Dynamically select the icon based on the string
+  if (!IconComponent) {
+    return null; // Fallback if the icon doesn't exist
+  }
+  return <IconComponent />;
+};
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -72,7 +81,7 @@ const Layout = ({ children }) => {
             onClick={() => window.open(route.url, '_blank')} // Open in a new tab
             sx={{ cursor: 'pointer' }}
           >
-            {IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>}
+            {IconComponent && <ListItemIcon><DynamicIcon iconName={route.icon} /></ListItemIcon>}
             {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
           </ListItem>
         );
@@ -82,7 +91,7 @@ const Layout = ({ children }) => {
         return (
           <React.Fragment key={route.path}>
             <ListItem button="true" onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
-              {IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>}
+              {IconComponent && <ListItemIcon><DynamicIcon iconName={route.icon} /></ListItemIcon>}
               {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
               {hasChildren && (openMenu[routeKey] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
