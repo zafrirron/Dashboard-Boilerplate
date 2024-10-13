@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { findOrCreateUser } = require('../controllers/userController'); // Implement this controller
 const pool = require('../config/db'); // PostgreSQL connection pool
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const logger = require('../utils/logger');  // Import your standard logger
 
 /**
  * @swagger
@@ -106,9 +107,12 @@ router.post('/logout', (req, res) => {
     }
   
     try {
+      //logger.info(`Profile data requested`);
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const { email } = decoded;
-  
+
+      logger.info(`Token for email: ${email} `);
+
       // Fetch the user's data from the database
       const result = await pool.query('SELECT id, name, email, role, active, created_at FROM users WHERE email = $1', [email]);
   
@@ -117,10 +121,10 @@ router.post('/logout', (req, res) => {
       }
   
       const user = result.rows[0];
-      res.status(200).json(user);
+      return res.status(200).json(user);
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      res.status(500).json({ message: 'Server error' });
+      return res.status(500).json({ message: 'Server error' });
     }
   });
   

@@ -44,7 +44,7 @@ const adminRouter = require('./routes/adminRoutes');  // Include the new admin r
 app.use('/api/items', itemsRouter);
 app.use('/api/auth', authRouter);  // Add auth routes
 app.use('/api/admin', adminRouter);  // Register the admin routes
-app.use('/api/profile', authRouter);  // Register the admin routes
+//app.use('/api/profile', authRouter);  // Register the admin routes
 
 // Start the server using the host and port from environment variables
 app.listen(PORT, HOST, () => {

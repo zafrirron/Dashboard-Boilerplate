@@ -10,6 +10,7 @@ if (typeof window !== 'undefined') {
   const AdminPanelSettingsIcon = require('@mui/icons-material/AdminPanelSettings').default;
   const GroupIcon = require('@mui/icons-material/Group').default;
   const ApiIcon = require('@mui/icons-material/Api').default;  // Swagger icon
+  const ProfileIcon = require('@mui/icons-material/Info').default;
 
   icons = {
     home: HomeIcon,
@@ -20,6 +21,7 @@ if (typeof window !== 'undefined') {
     logout: ExitToAppIcon,
     admin: AdminPanelSettingsIcon,
     userManagement: GroupIcon,
+    profile: ProfileIcon,
   };
 }
 
@@ -92,19 +94,20 @@ module.exports = {
         },
       },
     },
+    profile: {
+      path: '/profile',
+      roles: ['logged', 'admin'],
+      frontendVisible: true,
+      icon: icons.profile ? icons.profile : null,
+      page: 'UserProfilePage',
+      children: null,
+    },
     logout: {
       path: '/logout',
       roles: ['logged', 'admin'],
       frontendVisible: false,
       icon: icons.logout ? icons.logout : null,
       children: null,
-    },
-    profile: {
-      path: '/profile',
-      roles: ['logged'],
-      frontendVisible: true,
-      icon: null,
-      page: 'UserProfilePage',
     },
   },
 };

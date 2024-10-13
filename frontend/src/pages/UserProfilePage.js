@@ -5,7 +5,7 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}/api/auth/profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -22,11 +22,11 @@ const UserProfilePage = () => {
 
   return (
     <div>
-      <h1>Your Profile</h1>
+      <h1>{user.name}'s Profile</h1>
       <p>Email: {user.email}</p>
       <p>Role: {user.role}</p>
       <p>Account Active: {user.active ? 'Yes' : 'No'}</p>
-      <p>Account Created: {user.createdAt}</p>
+      <p>Account Created: {user.created_at}</p>
     </div>
   );
 };

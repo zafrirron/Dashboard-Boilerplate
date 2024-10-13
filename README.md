@@ -38,6 +38,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
 
 -  **Rate Limiter**: brute-force attacks protection.
 -  **Helmet**: Header security protection.
+-  **User Profile Page**
 -  
 
 ---
