@@ -1,7 +1,103 @@
 
 # React Express PostgreSQL Docker Boilerplate
 
-This project is a boilerplate setup for a full-stack application using React on the frontend, Express for the backend, PostgreSQL as the database, and Docker for containerization.
+## Project Overview
+
+This project is a **full-stack boilerplate** designed to jump-start the development of web applications using **React** for the frontend, **Express** for the backend, **PostgreSQL** as the database, and **Docker** for containerization. 
+
+The boilerplate comes with built-in **role-based user management (RBAC)**, allowing for flexible user roles and permissions. It includes authentication via **JWT tokens** for both traditional email/password logins and **Google OAuth** for seamless social authentication.
+
+### Key Features:
+
+- **Role-Based Access Control (RBAC)**: 
+  - Built-in user role management, where different users can have distinct access rights based on their role (e.g., admin, user, guest). 
+  - Page visibility and access are dynamically configured in both the frontend and backend based on the user’s role.
+  
+- **Google OAuth Login Integration**: 
+  - Integrated **Google OAuth** support for user authentication in addition to email/password login. Google login can be configured from the backend with JWT tokens generated for authorized users.
+  
+- **Dynamic RBAC Configuration**: 
+  - Configurable routes that allow you to define role-specific access to certain pages or sections of the application, with pages automatically hidden or shown based on the user's role.
+  
+- **JWT-Based Authentication**: 
+  - **JWT tokens** are used for stateless user authentication, ensuring secure communication between the client and server. Tokens are automatically checked for validity and expiration.
+  
+- **Containerized Environment**: 
+  - The project uses **Docker Compose** to orchestrate the services. The entire app (frontend, backend, and PostgreSQL database) runs within Docker containers for an isolated and scalable development environment.
+  
+- **Centralized Error Handling**: 
+  - The backend includes centralized error handling middleware, ensuring consistent and reliable error reporting.
+  
+- **PostgreSQL with Migrations and Seeding**: 
+  - The project uses **PostgreSQL** as the database, and includes support for migrations and seeding for easy database setup and management.
+
+- **Customizable API and Swagger Documentation**:
+  - Built-in support for **Swagger API documentation** for every route, allowing for clear API documentation and testing.
+
+---
+
+### Technologies Used:
+
+- **Frontend**: 
+  - React with modern hooks and components.
+  - MUI (Material-UI) for responsive design and styling.
+  
+- **Backend**: 
+  - Express.js for building the REST API.
+  - JWT for authentication.
+  - Node.js with PostgreSQL for data persistence.
+  
+- **Database**: 
+  - PostgreSQL with support for migrations and seeding.
+  
+- **Authentication**:
+  - Email/password login with hashed credentials.
+  - Google OAuth login integration for social login.
+  
+- **Containerization**:
+  - Docker and Docker Compose for setting up the services.
+  
+- **Role-Based Security**:
+  - Secure role-based access control (RBAC) system to manage access to specific pages and API routes based on user roles.
+  
+---
+
+### How to Use:
+
+1. **Clone the repository**:
+    ```bash
+    git clone <repository_url>
+    ```
+
+2. **Environment Configuration**:
+   Create a `.env` file in the root directory to specify environment variables like database connection, JWT secret, and Google OAuth credentials:
+   
+    ```
+    # .env file
+    BACKEND_PORT=5000
+    FRONTEND_PORT=3000
+    DB_PORT=5432
+    DB_NAME=your_db_name
+    DB_USER=your_db_user
+    DB_PASSWORD=your_db_password
+    JWT_SECRET=your_jwt_secret
+    GOOGLE_CLIENT_ID=your_google_client_id
+    ```
+
+3. **Docker Setup**:
+    Build and run the app with Docker Compose:
+    
+    ```bash
+    docker-compose up --build
+    ```
+
+4. **Accessing the App**:
+    - The frontend will be available at `http://localhost:3000`.
+    - The backend API will be available at `http://localhost:5000`.
+    - Swagger documentation will be available at `http://localhost:5000/api-docs`.
+
+---
+
 
 ## Project Folder Structure
 
