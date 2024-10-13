@@ -176,6 +176,13 @@ docker-compose down -v
 docker-compose up --build
 ```
 
+## Additional Features
+
+-  JWT Authentication
+-  Authorization (RBAC)
+-  Rate Limiting
+-  
+
 ## Additional Notes
 
 - **Environment Variables**: Use the `.env` file to store sensitive configuration such as database credentials, API keys, etc.

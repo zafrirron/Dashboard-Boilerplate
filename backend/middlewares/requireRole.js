@@ -48,7 +48,7 @@ const requireRole = (routeKey) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      logger.info(`Decoded token for route ${route.path}: ${JSON.stringify(decoded)}`);
+      //logger.info(`Decoded token for route ${route.path}: ${JSON.stringify(decoded)}`);
 
       if (route.roles.includes(decoded.role)) {
         return next();  // User has the correct role
