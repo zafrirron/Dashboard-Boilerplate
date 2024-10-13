@@ -25,7 +25,7 @@ const getPageComponent = (pageName) => {
 
 // Function to render a route based on the configuration
 const renderRoute = (route, role) => {
-  if (!route.roles.includes(role)) {
+  if (!route.roles.includes(role) && role !== 'admin') {
     return null; // Role-based access control
   }
 

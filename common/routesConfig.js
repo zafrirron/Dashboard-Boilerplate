@@ -29,7 +29,7 @@ module.exports = {
   routes: {
     home: {
       path: '/',
-      roles: ['unlogged', 'logged', 'admin'],
+      roles: ['unlogged', 'logged'],
       frontendVisible: true,
       icon: icons.home ? icons.home : null,
       page: 'HomePage',
@@ -53,7 +53,7 @@ module.exports = {
     },
     dashboard: {
       path: '/dashboard',
-      roles: ['logged', 'admin'],
+      roles: ['logged'],
       frontendVisible: true,
       icon: icons.dashboard ? icons.dashboard : null,
       children: {
@@ -96,7 +96,7 @@ module.exports = {
     },
     profile: {
       path: '/profile',
-      roles: ['logged', 'admin'],
+      roles: ['logged'],
       frontendVisible: true,
       icon: icons.profile ? icons.profile : null,
       page: 'UserProfilePage',
@@ -104,7 +104,7 @@ module.exports = {
     },
     logout: {
       path: '/logout',
-      roles: ['logged', 'admin'],
+      roles: ['logged'],
       frontendVisible: false,
       icon: icons.logout ? icons.logout : null,
       children: null,

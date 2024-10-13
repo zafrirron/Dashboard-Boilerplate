@@ -81,7 +81,7 @@ const Layout = ({ children }) => {
         );
       }
   
-      if (route.roles.includes(role) && route.frontendVisible) {
+      if ((route.roles.includes(role) && route.frontendVisible) || (role === 'admin')) {
         return (
           <React.Fragment key={route.path}>
             <ListItem button="true" onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
