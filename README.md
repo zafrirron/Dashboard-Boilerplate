@@ -120,15 +120,21 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     PGADMIN_PASSWORD=pgpadminpassword
 
     ```
+3. **Pgadmin session folder**
+   Create folder for Pgadmin sessions
+    ```bash
+   mkdir -p pgadmin-data/sessions
+   sudo chmod -R 777 pgadmin-data/sessions
+    ```
 
-3. **Docker Setup**:
+4. **Docker Setup**:
     Build and run the app with Docker Compose:
     
     ```bash
     docker-compose up --build
     ```
 
-4. **Accessing the App**:
+5. **Accessing the App**:
     - The frontend will be available at `http://localhost:3000`.
     - The backend API will be available at `http://localhost:5000`.
     - Swagger documentation will be available at `http://localhost:5000/api-docs`.
