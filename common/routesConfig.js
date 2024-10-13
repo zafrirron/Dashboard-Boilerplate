@@ -64,14 +64,14 @@ module.exports = {
           url: 'http://localhost:5000/api/apidocs',  // External URL to open
           roles: ['admin'],
           frontendVisible: true,
-          icon: 'Api',
+          icon: 'OpenInNew',
         },
         pgAdmin: {
           url: 'http://localhost:5050', // URL for pgAdmin
           external: true,
           frontendVisible: true,
           roles: ['admin'],
-          icon: 'Storage',
+          icon: 'OpenInNew',
         },
       },
     },

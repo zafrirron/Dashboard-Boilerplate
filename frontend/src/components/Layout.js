@@ -71,6 +71,7 @@ const Layout = ({ children }) => {
       const route = routes[routeKey];
       const IconComponent = route?.icon;
       const hasChildren = route?.children && typeof route.children === 'object';
+      const menuText=routeKey.charAt(0).toUpperCase() + routeKey.slice(1)
 
       // Check if the route is an external link
       if (route.external && route.frontendVisible) {
@@ -81,8 +82,8 @@ const Layout = ({ children }) => {
             onClick={() => window.open(route.url, '_blank')} // Open in a new tab
             sx={{ cursor: 'pointer' }}
           >
-            {IconComponent && <ListItemIcon><DynamicIcon iconName={route.icon} /></ListItemIcon>}
-            {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
+            {IconComponent && <ListItemIcon title={menuText}><DynamicIcon iconName={route.icon}/></ListItemIcon>}
+            {!isCollapsed && <ListItemText primary={menuText} />}
           </ListItem>
         );
       }
@@ -91,8 +92,8 @@ const Layout = ({ children }) => {
         return (
           <React.Fragment key={route.path}>
             <ListItem button="true" onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
-              {IconComponent && <ListItemIcon><DynamicIcon iconName={route.icon} /></ListItemIcon>}
-              {!isCollapsed && <ListItemText primary={routeKey.charAt(0).toUpperCase() + routeKey.slice(1)} />}
+              {IconComponent && <ListItemIcon title={menuText}><DynamicIcon iconName={route.icon} /></ListItemIcon>}
+              {!isCollapsed && <ListItemText primary={menuText} />}
               {hasChildren && (openMenu[routeKey] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
             {hasChildren && (

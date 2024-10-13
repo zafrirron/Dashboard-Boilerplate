@@ -133,8 +133,10 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     ```bash
     docker-compose up --build
     ```
+5. **Check for errors**
+   Check for any console or frontend erros and help by opening repository issues 
 
-5. **Accessing the App**:
+6. **Accessing the App**:
     - The frontend will be available at `http://localhost:3000`.
     - The backend API will be available at `http://localhost:5000`.
     - Swagger documentation will be available at `http://localhost:5000/api-docs`.
