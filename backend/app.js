@@ -8,6 +8,7 @@ require('dotenv').config();  // Load environment variables
 const cookieParser = require('cookie-parser'); // Import cookie-parser
 const bodyParser = require('body-parser');
 const rateLimiter = require('./middlewares/rateLimiter');
+const helmet = require('helmet');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //Rate Limiter
 app.use('/api', rateLimiter); // Apply rate limiting to all /api routes
+app.use(helmet()); // Apply helmet to secure headers
 
 const PORT = process.env.BACKEND_PORT || 5000;
 const HOST = '0.0.0.0';  // Accept connection from all containers

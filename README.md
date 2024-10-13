@@ -34,6 +34,12 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
 - **Customizable API and Swagger Documentation**:
   - Built-in support for **Swagger API documentation** for every route, allowing for clear API documentation and testing.
 
+### Additional Features
+
+-  **Rate Limiter**: brute-force attacks protection.
+-  **Helmet**: Header security protection.
+-  
+
 ---
 
 ### Technologies Used:
@@ -271,13 +277,6 @@ To reset the database, you can use:
 docker-compose down -v
 docker-compose up --build
 ```
-
-## Additional Features
-
--  JWT Authentication
--  Authorization (RBAC)
--  Rate Limiting
--  
 
 ## Additional Notes
 
