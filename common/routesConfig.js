@@ -97,7 +97,7 @@ module.exports = {
     profile: {
       path: '/profile',
       roles: ['logged'],
-      frontendVisible: true,
+      frontendVisible: false,
       icon: icons.profile ? icons.profile : null,
       page: 'UserProfilePage',
       children: null,

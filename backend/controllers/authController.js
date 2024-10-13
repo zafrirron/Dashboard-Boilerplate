@@ -5,6 +5,23 @@ const pool = require('../config/db');  // Import the database connection
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 
+// Example: Login function or wherever you generate JWT
+const generateToken = (user) => {
+  // Fetch the token expiration time from .env or set a default value (in seconds)
+  const tokenExpirationTime = process.env.TOKEN_EXPIRY_TIME || '3600'; // Default is 1 hour (3600 seconds)
+
+  // Generate the JWT token using the user's details and the expiration time from .env
+  const token = jwt.sign(
+    { name: user.name, email: user.email, role: user.role }, 
+    process.env.JWT_SECRET, 
+    {
+      expiresIn: `${tokenExpirationTime}s`,  // Use seconds for expiresIn
+    }
+  );
+
+  return token;
+};
+
 // Login function
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -35,9 +52,7 @@ exports.login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = generateToken(user);
 
     logger.info(`Successful login for email: ${email} with role: ${user.role}`);
 
@@ -73,9 +88,7 @@ exports.googleLogin = async (req, res) => {
     }
 
     // Generate your own JWT token
-    token = jwt.sign({ name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    token = generateToken(user);
     logger.info(`Successful google login for email: ${email} with role: ${user.role}`);
 
     return res.status(200).json({ token });

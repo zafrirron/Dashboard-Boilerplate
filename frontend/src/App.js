@@ -1,20 +1,17 @@
-import React, { Suspense, useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { Suspense, useContext, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import routesConfig from './common/routesConfig';
 import { AuthProvider, AuthContext } from './context/AuthContext'; // Import AuthProvider and AuthContext
 
 // Function to load the page dynamically based on the `page` field in routesConfig
 const getPageComponent = (pageName) => {
-  // Default page to load if component not found
   let Component = React.lazy(() => import('./pages/DefaultPage'));
-  
+
   if (!pageName || pageName === undefined) {
-    // Use the DefaultPage if pageName is missing or undefined
     return Component;
   }
   try {
-    // Dynamically import the component for the given pageName
     Component = React.lazy(() => import(`./pages/${pageName}`));
   } catch (error) {
     console.error(`Component not found for route: ${pageName}, loading DefaultPage.`);
@@ -24,12 +21,10 @@ const getPageComponent = (pageName) => {
 
 // Function to render a route based on the configuration
 const renderRoute = (route, role) => {
-  // Ensure that only allowed roles can access the route
   if (!route.roles.includes(role) && role !== 'admin') {
     return null; // Role-based access control
   }
 
-  // Load the page component dynamically
   const Component = getPageComponent(route.page);
 
   return (
@@ -55,29 +50,68 @@ const generateRoutes = (routes, role) => {
     if (route.children) {
       return generateRoutes(route.children, role); // Recursively generate child routes
     }
-    return renderRoute(route, role); // Render the individual route
+    return renderRoute(route, role);
   });
 };
 
 // Named function for App
 const App = () => {
-  const { role } = useContext(AuthContext); // Get the current role from AuthContext
+  const { role, handleLogout } = useContext(AuthContext); // Get the current role from AuthContext
+  const navigate = useNavigate(); // useNavigate hook for redirection
+
+  // Effect to handle redirect to login page when the user is logged out
+  useEffect(() => {
+    //console.log('useEffect triggered - Checking token expiry');
+    const checkTokenExpiry = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        //console.log('Token found:', token);
+        try {
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          //console.log('Decoded token:', decodedToken);
+          const currentTime = Date.now() / 1000;
+          //console.log('Current time (in seconds):', currentTime);
+
+          if (decodedToken.exp && decodedToken.exp < currentTime) {
+            console.log('Token expired, logging out...');
+            handleLogout(); // Token expired, logout user
+            navigate('/login'); // Redirect to login
+          } else {
+            //console.log('Token is valid.');
+          }
+        } catch (error) {
+          console.error('Error checking token expiry:', error);
+          handleLogout(); // Invalid token, log out the user
+          navigate('/login'); // Redirect to login
+        }
+      } else {
+          console.log('No token found, user is unlogged.');
+      }
+    };
+    checkTokenExpiry();
+
+    // Set up an interval to check token expiration periodically (every 60 seconds)
+    const intervalId = setInterval(checkTokenExpiry, 60000); // 60 seconds
+
+    return () => clearInterval(intervalId); // Clean up the interval on unmount
+
+  }, [role, handleLogout, navigate]); // Dependency array watches the role changes
 
   return (
-    <Router>
-      <Layout role={role}>
-        <Routes>
-          {generateRoutes(routesConfig.routes, role)}
-        </Routes>
-      </Layout>
-    </Router>
+    <Layout role={role}>
+      <Routes>
+        {generateRoutes(routesConfig.routes, role)}
+      </Routes>
+    </Layout>
   );
 };
 
-// Wrap the App component with AuthProvider here
+// Wrap the App component with AuthProvider and Router here
 const WrappedApp = () => (
   <AuthProvider>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </AuthProvider>
 );
 

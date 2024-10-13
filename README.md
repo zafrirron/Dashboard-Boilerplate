@@ -39,7 +39,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
 -  **Rate Limiter**: brute-force attacks protection.
 -  **Helmet**: Header security protection.
 -  **User Profile Page**
--  
+-  **Token Expiry**: set in .env Auto logout after expiry 
 
 ---
 
@@ -82,6 +82,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     ```
     # .env file
     REACT_APP_APP_NAME=React Express PG Boilerplate
+    REACT_APP_TOKEN_EXPIRY_TIME=3600
     BACKEND_HOST=localhost
     BACKEND_PORT=5000
     FRONTEND_HOST=localhost
