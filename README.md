@@ -132,7 +132,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     - The frontend will be available at `http://localhost:3000`.
     - The backend API will be available at `http://localhost:5000`.
     - Swagger documentation will be available at `http://localhost:5000/api-docs`.
-    - PGAdmin db management frontend will be available at `http://localhost:5050/browser-docs`.
+    - PGAdmin db management frontend will be available at `http://localhost:5050/browser`.
 
 ---
 

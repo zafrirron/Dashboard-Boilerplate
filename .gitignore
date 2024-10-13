@@ -27,3 +27,6 @@ Thumbs.db
 build/
 dist/
 .tmp/
+
+# pgadmin data
+pgadmin-data/
