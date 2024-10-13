@@ -81,14 +81,26 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
    
     ```
     # .env file
+    REACT_APP_APP_NAME=React Express PG Boilerplate
+    BACKEND_HOST=localhost
     BACKEND_PORT=5000
+    FRONTEND_HOST=localhost
     FRONTEND_PORT=3000
+    CORS_ORIGIN=http://${FRONTEND_HOST}:${FRONTEND_PORT}
+    BACKEND_API_URL=http://${BACKEND_HOST}:${BACKEND_PORT}
+    POSTGRES_PASSWORD=superuserpassword
+    DB_HOST=db
     DB_PORT=5432
     DB_NAME=your_db_name
     DB_USER=your_db_user
     DB_PASSWORD=your_db_password
     JWT_SECRET=your_jwt_secret
     GOOGLE_CLIENT_ID=your_google_client_id
+    EACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+    NODE_ENV=development
+    LOG_LEVEL=info  # error, warn, info, http, verbode, debug, silly
+
     ```
 
 3. **Docker Setup**:

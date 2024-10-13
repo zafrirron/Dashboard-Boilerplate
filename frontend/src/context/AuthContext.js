@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState('unlogged');
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
-  
+
   const handleLogout = useCallback(() => {
     localStorage.removeItem('token');
     setRole('unlogged');
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         handleLogout(); // Invalid token, log out the user
       }
     }
-  }, [handleLogout]);  // Include handleLogout in the dependency array
+  }, [handleLogout]);
 
   const handleGoogleLogin = async (googleResponse) => {
     try {
@@ -48,8 +48,8 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
-        handleLogin();
+        localStorage.setItem('token', data.token); // Store token and then update role
+        handleLogin();  // Use handleLogin after Google login to update role and user info
       } else {
         console.log('Failed to login with Google.');
       }
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   // Automatically check for the token on initial app load
   useEffect(() => {
     handleLogin();
-  }, [handleLogin]);  // Include handleLogin in the dependency array
+  }, [handleLogin]);
 
   return (
     <AuthContext.Provider value={{ role, setRole, userInfo, handleLogin, handleLogout, handleGoogleLogin }}>

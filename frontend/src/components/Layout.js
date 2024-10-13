@@ -30,7 +30,6 @@ const Layout = ({ children }) => {
   };
 
   const handleNavigation = (path) => {
-    //console.log(`Navigate to: ${path}`);
     navigate(path);
   };
 
@@ -50,13 +49,11 @@ const Layout = ({ children }) => {
   };
 
   const renderMenuItems = (routes) => {
-    //console.log(`routes: ${JSON.stringify(routes)}`);
     if (!routes || typeof routes !== 'object') return null;
-  
-      // Set the cookie properly
+
+    // Set the cookie properly
     const token = localStorage.getItem('token');
     if (token) {
-      // Set 'secure' flag only when running on HTTPS
       const secureFlag = window.location.protocol === 'https:' ? 'secure;' : '';
       document.cookie = `token=${token}; path=/; ${secureFlag} SameSite=Lax`;
     }
@@ -72,7 +69,7 @@ const Layout = ({ children }) => {
           <ListItem
             button="true"
             key={routeKey}
-            onClick={() =>  window.open(route.url, '_blank')} // Open in a new tab
+            onClick={() => window.open(route.url, '_blank')} // Open in a new tab
             sx={{ cursor: 'pointer' }}
           >
             {IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>}
@@ -80,8 +77,8 @@ const Layout = ({ children }) => {
           </ListItem>
         );
       }
-  
-      if ((route.roles.includes(role) && route.frontendVisible) || (role === 'admin')) {
+
+      if ((route.roles.includes(role) && route.frontendVisible) || role === 'admin') {
         return (
           <React.Fragment key={route.path}>
             <ListItem button="true" onClick={hasChildren ? () => handleToggleMenu(routeKey) : () => handleNavigation(route.path)} sx={{ cursor: 'pointer' }}>
@@ -102,7 +99,9 @@ const Layout = ({ children }) => {
       return null;
     });
   };
-  
+
+  const appName = process.env.REACT_APP_APP_NAME || 'App Name';  // Fetch app name from .env
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -119,10 +118,13 @@ const Layout = ({ children }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Admin Panel
+
+          {/* Centered App Name */}
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
+            {appName}
           </Typography>
 
+          {/* Right-side actions (Login or Profile) */}
           {role === 'unlogged' && <Button color="inherit" onClick={() => navigate('/login')}>Login</Button>}
           {role !== 'unlogged' && (
             <>
@@ -143,7 +145,7 @@ const Layout = ({ children }) => {
                 </MenuItem>
                 <Divider />
                 {/* Action Links */}
-                <MenuItem onClick={() => handleNavigation('/profile')}>Profile</MenuItem>
+                <MenuItem onClick={() => navigate('/profile')}>Profile</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>

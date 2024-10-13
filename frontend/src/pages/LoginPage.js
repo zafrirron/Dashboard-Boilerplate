@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Box, Typography, Container, CssBaseline, Avatar } from '@mui/material';
@@ -8,8 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const LoginPage = () => {
-  const { handleLogin, handleGoogleLogin } = useContext(AuthContext); // Use the context functions
+  const { handleLogin, handleGoogleLogin, role } = useContext(AuthContext); // Use the context functions
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role !== 'unlogged') {
+      navigate('/'); // Redirect to home if user is logged in
+    }
+  }, [role, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -34,7 +40,6 @@ const LoginPage = () => {
           const data = await response.json();
           localStorage.setItem('token', data.token);  // Store JWT token
           handleLogin();  // Use context function to update the role
-          navigate('/');  // Redirect to home page
         } else {
           formik.setErrors({ serverError: 'Invalid credentials. Please try again.' });
         }
@@ -43,6 +48,10 @@ const LoginPage = () => {
       }
     },
   });
+
+  const handleGoogleLoginSuccess = async (response) => {
+    await handleGoogleLogin(response);  // Call Google login handler to set role
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -113,7 +122,7 @@ const LoginPage = () => {
         </Typography>
 
         <GoogleLogin
-          onSuccess={handleGoogleLogin}  // Use context for Google login
+          onSuccess={handleGoogleLoginSuccess}  // Handle Google login and set role
           onError={() => console.log('Google Login Failed')}
         />
       </Box>
