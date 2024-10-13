@@ -109,7 +109,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     EACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     GOOGLE_CLIENT_SECRET=your_google_client_secret
 
-    # Nod params
+    # Node params
     NODE_ENV=development
 
     # Logger params
@@ -132,6 +132,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     - The frontend will be available at `http://localhost:3000`.
     - The backend API will be available at `http://localhost:5000`.
     - Swagger documentation will be available at `http://localhost:5000/api-docs`.
+    - PGAdmin db management frontend will be available at `http://localhost:5050/browser-docs`.
 
 ---
 
@@ -321,3 +322,4 @@ docker-compose up --build
 
 - **Environment Variables**: Use the `.env` file to store sensitive configuration such as database credentials, API keys, etc.
 - **PostgreSQL Configuration**: The PostgreSQL database is initialized with the `init.sql` script located in the `db/` folder.
+- **PGAdmin Configuration**: The PGAdmin PostgreSQL database registration is initialized with the `generate_servers_json.sh` script located in the `scripts/` folder.
