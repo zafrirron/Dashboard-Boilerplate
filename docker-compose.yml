@@ -66,6 +66,28 @@ services:
     networks:
       - app-network
 
+  strapi:
+    image: strapi/strapi
+    container_name: strapi
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USERNAME: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+      # Optional: Set Strapi Admin email and password
+      ADMIN_EMAIL: ${STRAPI_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${STRAPI_ADMIN_PASSWORD}
+    volumes:
+      - ./strapi-app:/srv/app  # Volume to persist Strapi app
+    ports:
+      - "1337:1337"  # Strapi's default port
+    networks:
+      - app-network
+    depends_on:
+      - db
+
 networks:
   app-network:
     driver: bridge

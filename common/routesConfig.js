@@ -59,6 +59,13 @@ module.exports = {
           icon: 'GroupAdd',
           page: 'UserManagementPage',
         },
+        recordModel: {
+          path: '/admin/record-model',
+          roles: ['admin'],
+          frontendVisible: true,
+          icon: 'AddCircleIcon',
+          page: 'RecordForm',
+        },
         apiDocs: {  
           external: true,  // New attribute to indicate it's an external link
           url: 'http://localhost:5000/api/apidocs',  // External URL to open

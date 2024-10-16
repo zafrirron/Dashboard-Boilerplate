@@ -40,7 +40,7 @@ INSERT INTO items (name, description) VALUES
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
-  name VARCHAR(255) UNIQUE DEFAULT '',
+  name VARCHAR(255) DEFAULT '',
   password VARCHAR(255) NOT NULL,
   active BOOLEAN DEFAULT TRUE,
   role VARCHAR(50) DEFAULT 'user',
@@ -49,3 +49,26 @@ CREATE TABLE IF NOT EXISTS users (
 -- Inser admin
 INSERT INTO users (email, name, password, role) VALUES
 ('zafrir.ron@gmail.com', 'Zafi', '$2b$12$46tbSwC/cVal1q0JPsyDr.iZYud54200TEzItY1BeDfobwXYdYK/i', 'admin');
+
+-- Create table for record form
+CREATE TABLE IF NOT EXISTS record_models (
+    id SERIAL PRIMARY KEY,
+    table_name VARCHAR(255) UNIQUE NOT NULL,
+    fields JSONB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Trigger to automatically update the `updated_at` column
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_record_models_updated_at
+BEFORE UPDATE ON record_models
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();

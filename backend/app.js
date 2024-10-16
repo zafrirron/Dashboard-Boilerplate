@@ -40,11 +40,12 @@ app.use('/api/apidocs', requireRole('apiDocs'), swaggerUi.serve, swaggerUi.setup
 const itemsRouter = require('./routes/itemsRoutes');
 const authRouter = require('./routes/authRoutes');  // Include auth routes
 const adminRouter = require('./routes/adminRoutes');  // Include the new admin routes
+const recordsModel = require('./routes/recordRoutes');  // Include the new admin routes
 
 app.use('/api/items', itemsRouter);
 app.use('/api/auth', authRouter);  // Add auth routes
 app.use('/api/admin', adminRouter);  // Register the admin routes
-//app.use('/api/profile', authRouter);  // Register the admin routes
+app.use('/api/recordmodel', recordsModel);  // Register the admin routes
 
 // Start the server using the host and port from environment variables
 app.listen(PORT, HOST, () => {

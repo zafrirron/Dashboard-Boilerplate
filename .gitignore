@@ -29,4 +29,4 @@ dist/
 .tmp/
 
 # pgadmin data
-pgadmin-data/
+pgadmin-data/*

@@ -5,12 +5,14 @@
 
 This project is a **full-stack boilerplate** designed to jump-start the development of web applications using **React** for the frontend, **Express** for the backend, **PostgreSQL** as the database, and **Docker** for containerization. 
 
-The boilerplate comes with built-in **role-based user management (RBAC)**, allowing for flexible user roles and permissions. It includes authentication via **JWT tokens** for both traditional email/password logins and **Google OAuth** for seamless social authentication.
+The boilerplate also includes **Strapi** as a headless CMS to manage content and APIs with ease, enhancing the development workflow for creating content-rich applications.
+
+The project comes with built-in **role-based user management (RBAC)**, allowing for flexible user roles and permissions. It includes authentication via **JWT tokens** for both traditional email/password logins and **Google OAuth** for seamless social authentication.
 
 ### Key Features:
 
 - **Role-Based Access Control (RBAC)**: 
-  - Built-in user role management, where different users can have distinct access rights based on their role (e.g., admin, user, guest). 
+  - Built-in user role management, where different users can have distinct access rights based on their role (e.g., admin, user, guest).
   - Page visibility and access are dynamically configured in both the frontend and backend based on the user’s role.
   
 - **Google OAuth Login Integration**: 
@@ -22,8 +24,11 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
 - **JWT-Based Authentication**: 
   - **JWT tokens** are used for stateless user authentication, ensuring secure communication between the client and server. Tokens are automatically checked for validity and expiration.
   
+- **Strapi as Headless CMS**:
+  - **Strapi** provides a flexible and powerful CMS, allowing for the easy creation of APIs and content management.
+  
 - **Containerized Environment**: 
-  - The project uses **Docker Compose** to orchestrate the services. The entire app (frontend, backend, and PostgreSQL database) runs within Docker containers for an isolated and scalable development environment.
+  - The project uses **Docker Compose** to orchestrate the services. The entire app (frontend, backend, Strapi, and PostgreSQL database) runs within Docker containers for an isolated and scalable development environment.
   
 - **Centralized Error Handling**: 
   - The backend includes centralized error handling middleware, ensuring consistent and reliable error reporting.
@@ -106,7 +111,7 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     # tokens and google auth params
     JWT_SECRET=your_jwt_secret
     GOOGLE_CLIENT_ID=your_google_client_id
-    EACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    REACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     GOOGLE_CLIENT_SECRET=your_google_client_secret
 
     # Node params
@@ -119,12 +124,18 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     PGADMIN_EMAIL=pgpadmin@email.com
     PGADMIN_PASSWORD=pgpadminpassword
 
+    #   Strapi
+    STRAPI_ADMIN_EMAIL=strapi@email.com
+    STRAPI_ADMIN_PASSWORD=strapipassword
     ```
+
 3. **Pgadmin session folder**
-   Create folder for Pgadmin sessions
+   make sure your pdadmin-data and strapi-app folders are writable by the containers
+
     ```bash
-   mkdir -p pgadmin-data/sessions
-   sudo chmod -R 777 pgadmin-data/sessions
+   sudo chmod -R 777 pgadmin-data
+   sudo chmod -R 777 strapi-app
+
     ```
 
 4. **Docker Setup**:
@@ -133,17 +144,18 @@ The boilerplate comes with built-in **role-based user management (RBAC)**, allow
     ```bash
     docker-compose up --build
     ```
+
 5. **Check for errors**
-   Check for any console or frontend erros and help by opening repository issues 
+   Check for any console or frontend errors (report then to repository issues section) 
 
 6. **Accessing the App**:
     - The frontend will be available at `http://localhost:3000`.
     - The backend API will be available at `http://localhost:5000`.
+    - Strapi will be available at `http://localhost:1337`.
     - Swagger documentation will be available at `http://localhost:5000/api-docs`.
     - PGAdmin db management frontend will be available at `http://localhost:5050/browser`.
 
 ---
-
 
 ## Project Folder Structure
 
@@ -178,6 +190,8 @@ Here's an overview of the folder structure for this boilerplate:
 │   │   └── styles/
 │   ├── Dockerfile
 │   └── package.json
+├── strapi-app/
+│   └── config/
 ├── db/
 │   └── init.sql
 ├── pgadmin-data/
@@ -191,7 +205,7 @@ Here's an overview of the folder structure for this boilerplate:
 
 ## Docker Setup
 
-This project uses Docker to containerize the frontend, backend, and PostgreSQL services.
+This project uses Docker to containerize the frontend, backend, Strapi, and PostgreSQL services.
 
 ### Docker Compose
 
@@ -199,8 +213,9 @@ The `docker-compose.yml` file is in the root directory and manages the following
 
 1. **Frontend**: React app served by Nginx.
 2. **Backend**: Express app running on Node.js.
-3. **Database**: PostgreSQL with initialized scripts from the `db/init.sql` file.
-4. **DB Managemnt**: PGAdmin db managment tool.
+3. **Strapi**: Headless CMS for content management.
+4. **Database**: PostgreSQL with initialized scripts from the `db/init.sql` file.
+5. **DB Management**: PGAdmin db management tool.
 
 ### Running the Application
 
@@ -210,12 +225,15 @@ Pgadmin db server registration script (one time)
 ```bash
 bash ./scripts/generate_servers_json.sh
 ```
+
 Docker Compose 
 ```bash
 docker-compose up --build
 ```
 
-This will launch all the services and bind the frontend to `http://localhost:3000` and the backend API to `http://localhost:5000`.
+This will launch all the services and bind the frontend to `http://localhost:3000`, the backend API to `http://localhost:5000`, and Strapi to `http://localhost:1337`.
+
+---
 
 ## Logger Framework
 
@@ -247,87 +265,3 @@ We use a shared `routesConfig.js` located in the `common/` folder to define rout
 ### routesConfig.js
 
 This file contains all routes with role-based access control, icons for frontend display, and custom logic to handle child routes.
-
-#### Example Entry:
-
-```js
-module.exports = {
-  routes: {
-    home: {
-      path: '/',
-      roles: ['unlogged', 'logged', 'admin'],
-      frontendVisible: true,
-      icon: 'Home',
-      page: 'HomePage',
-    },
-    admin: {
-      path: '/admin',
-      roles: ['admin'],
-      frontendVisible: true,
-      icon: 'AdminPanelSettings',
-      children: {
-        userManagement: {
-          path: '/admin/user-management',
-          roles: ['admin'],
-          frontendVisible: true,
-          icon: 'GroupAdd',
-          page: 'UserManagementPage',
-        },
-      },
-    },
-  },
-};
-```
-
-### Adding Pages to the Frontend
-
-To add a new page, follow these steps:
-
-1. **Create the page**: Add a new React component to the `frontend/src/pages/` folder, e.g., `MyNewPage.js`.
-2. **Define the route**: Update `common/routesConfig.js` to include your new page:
-
-```js
-myNewPage: {
-  path: '/my-new-page',
-  roles: ['logged', 'admin'],
-  frontendVisible: true,
-  icon:'MUIIconName',
-  page: 'MyNewPage',
-},
-```
-
-3. **Accessing the Page**: After defining the route, the app will dynamically load the component and display it based on user roles.
-
-### Adding API Routes to the Backend
-
-1. **Create a new route**: In the `backend/routes/` folder, create a new route file, e.g., `myNewRoute.js`.
-2. **Register the route**: In `backend/app.js`, import and register the route:
-
-```js
-const myNewRoute = require('./routes/myNewRoute');
-app.use('/api/my-new-route', myNewRoute);
-```
-
-3. **Role-based Access Control**: Use the `requireRole` middleware to restrict access:
-
-```js
-const requireRole = require('../middlewares/requireRole');
-router.get('/', requireRole('admin'), myNewController);
-```
-
-### Database Initialization
-
-The `db/` folder contains the `init.sql` script used to initialize the PostgreSQL database. Make sure the `init.sql` script includes the necessary schema definitions.
-
-To reset the database, you can use:
-
-```bash
-docker-compose down -v
-docker-compose up --build
-```
-
-## Additional Notes
-
-- **Environment Variables**: Use the `.env` file to store sensitive configuration such as database credentials, API keys, etc.
-- **PostgreSQL Configuration**: The PostgreSQL database is initialized with the `init.sql` script located in the `db/` folder.
-- **PGAdmin Configuration**: The PGAdmin PostgreSQL database registration is initialized with the `generate_servers_json.sh` script located in the `scripts/` folder.
