@@ -1,4 +1,4 @@
--- Create the user if it doesn't exist
+-- Create the express user if it doesn't exist
 DO
 $$
 BEGIN
@@ -9,19 +9,55 @@ BEGIN
 END
 $$;
 
--- Create the database if it doesn't exist
+-- Create the expressdb database if it doesn't exist
+SELECT 'CREATE DATABASE expressdb'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'expressdb')\gexec
+
+-- Create the expressdb database if it doesn't exist
+--DO
+--$$
+--BEGIN
+--   IF NOT EXISTS (
+--      SELECT FROM pg_database WHERE datname = 'expressdb') THEN
+--      CREATE DATABASE expressdb;
+--   END IF;
+--END
+--$$;
+
+-- Grant all privileges to expressuser on the expressdb database
+GRANT ALL PRIVILEGES ON DATABASE expressdb TO expressuser;
+
+-- Create the strapi user if it doesn't exist
 DO
 $$
 BEGIN
    IF NOT EXISTS (
-      SELECT FROM pg_database WHERE datname = 'expressdb') THEN
-      CREATE DATABASE expressdb;
+      SELECT FROM pg_catalog.pg_roles WHERE rolname = 'strapiuser') THEN
+      CREATE ROLE strapiuser WITH LOGIN PASSWORD 'strapipassword';  -- Make sure this password matches your .env DB_PASSWORD
    END IF;
 END
 $$;
 
--- Grant all privileges to expressuser on the expressdb database
-GRANT ALL PRIVILEGES ON DATABASE expressdb TO expressuser;
+-- Create the strapidb database if it doesn't exist
+SELECT 'CREATE DATABASE strapidb'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'strapidb')\gexec
+
+-- Create the strapidb database if it doesn't exist
+--DO
+--$$
+--BEGIN
+--   IF NOT EXISTS (
+--      SELECT FROM pg_database WHERE datname = 'strapidb') THEN
+--      CREATE DATABASE strapidb;
+--   END IF;
+--END
+--$$;
+
+-- Grant all privileges to strapiuser on the strapidb database
+GRANT ALL PRIVILEGES ON DATABASE strapidb TO strapiuser;
+
+-- Set context to exprssdb to create tables
+\c expressdb
 
 -- Create the table "items" if it doesn't exist
 CREATE TABLE IF NOT EXISTS items (

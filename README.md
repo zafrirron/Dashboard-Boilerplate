@@ -5,11 +5,19 @@
 
 This project is a **full-stack boilerplate** designed to jump-start the development of web applications using **React** for the frontend, **Express** for the backend, **PostgreSQL** as the database, and **Docker** for containerization. 
 
-The boilerplate also includes **Strapi** as a headless CMS to manage content and APIs with ease, enhancing the development workflow for creating content-rich applications.
+The boilerplate also includes **Strapi** as a headless CMS to manage content and APIs with ease, enhancing the development workflow for creating content-rich applications (you can use expres backend and/or strapi cms).
 
 The project comes with built-in **role-based user management (RBAC)**, allowing for flexible user roles and permissions. It includes authentication via **JWT tokens** for both traditional email/password logins and **Google OAuth** for seamless social authentication.
 
+### Updates
+
+  - v1.0.0 - First version
+
 ### Key Features:
+
+- **Strapi as Headless CMS**:
+  - **Strapi** provides a flexible and powerful CMS, allowing for the easy creation of APIs and content management.
+  - this boilerplate includes 3 predefined page templates (HTML, MarkDown, Table), once you create the collection/componenet in strapi cms, you only need to set the attributes to get readu made front end pages 
 
 - **Role-Based Access Control (RBAC)**: 
   - Built-in user role management, where different users can have distinct access rights based on their role (e.g., admin, user, guest).
@@ -23,9 +31,6 @@ The project comes with built-in **role-based user management (RBAC)**, allowing 
   
 - **JWT-Based Authentication**: 
   - **JWT tokens** are used for stateless user authentication, ensuring secure communication between the client and server. Tokens are automatically checked for validity and expiration.
-  
-- **Strapi as Headless CMS**:
-  - **Strapi** provides a flexible and powerful CMS, allowing for the easy creation of APIs and content management.
   
 - **Containerized Environment**: 
   - The project uses **Docker Compose** to orchestrate the services. The entire app (frontend, backend, Strapi, and PostgreSQL database) runs within Docker containers for an isolated and scalable development environment.
@@ -65,6 +70,9 @@ The project comes with built-in **role-based user management (RBAC)**, allowing 
 - **Database**: 
   - PostgreSQL with support for migrations and seeding.
   - PGAdmin Postgress db managment Frontend
+
+- **CMS**: 
+  - Strapi 5.0 headless CMS management.
   
 - **Authentication**:
   - Email/password login with hashed credentials.
@@ -177,6 +185,10 @@ Here's an overview of the folder structure for this boilerplate:
 │   ├── Dockerfile
 │   ├── app.js
 │   └── server.js
+├── common/
+│   └── routesConfig.js
+├── db/
+│   └── init.sql
 ├── frontend/
 │   ├── public/
 │   │   └── assets/
@@ -190,14 +202,12 @@ Here's an overview of the folder structure for this boilerplate:
 │   │   └── styles/
 │   ├── Dockerfile
 │   └── package.json
-├── strapi-app/
-│   └── config/
-├── db/
-│   └── init.sql
 ├── pgadmin-data/
-├── common/
-│   └── routesConfig.js
+├── postgres-data/
 ├── scripts/
+├── strapi/
+│   └── config/
+├── .gitignore
 ├── docker-compose.yml
 ├── README.md
 └── .env
@@ -211,7 +221,7 @@ This project uses Docker to containerize the frontend, backend, Strapi, and Post
 
 The `docker-compose.yml` file is in the root directory and manages the following services:
 
-1. **Frontend**: React app served by Nginx.
+1. **Frontend**: React app.
 2. **Backend**: Express app running on Node.js.
 3. **Strapi**: Headless CMS for content management.
 4. **Database**: PostgreSQL with initialized scripts from the `db/init.sql` file.
@@ -265,3 +275,126 @@ We use a shared `routesConfig.js` located in the `common/` folder to define rout
 ### routesConfig.js
 
 This file contains all routes with role-based access control, icons for frontend display, and custom logic to handle child routes.
+
+### routesConfig.js content help
+``` 
+module.exports = {
+  routes: {
+    home: {                               \\Entry name
+      path: '/',                          \\url
+      roles: ['unlogged', 'logged'],      \\page allowed roles (admin allowed all)
+      frontendVisible: true,              \\is page included in menu
+      icon: 'Home',                       \\Page menu icon
+      page: 'HomePage',                   \\Page JSX component name
+      children: null,                     \\Top level menu item
+    },
+    about: {
+      path: '/about',
+      roles: ['unlogged', 'logged'],
+      frontendVisible: true,
+      icon: 'Info',
+      page: 'StrapiMarkDownPage',         \\Generic strapi markdown content page
+      props: {componentName: 'about'},    \\strapi compoenent name to be served by strapi API
+      children: null,
+    },
+    login: {
+      path: '/login',
+      roles: ['unlogged'],
+      frontendVisible: true,
+      icon: 'Login',
+      page: 'LoginPage',
+      children: null,
+    },
+    orders: {
+      path: '/orders',
+      roles: ['logged'],
+      frontendVisible: true,
+      icon: 'List',
+      page: 'StrapiTablePage',          \\Generic strapi table view page
+      props: {tableName: 'Orders', collectionName:'orders', collectionTypeName: 'order', collectionMetaName: 'items-md'}, \\Table name: page title, collection name: the strapi data table, collectionTypeName: strapi fields attributes, collectionMetaName: extra attributes(**)
+      children: null,
+    },
+    pagea: {
+      path: '/pagea',
+      roles: ['logged'],
+      frontendVisible: true,
+      icon: 'Html',
+      page: 'StrapiHtmlPage',           \\Generic strapi HTML page
+      props: {componentName:'pagea'},   \\trapi HTML componeent name
+      children: null,
+    },
+    dashboard: {
+      path: '/dashboard',
+      roles: ['logged'],
+      frontendVisible: true,
+      icon: 'Dashboard',
+      children: {
+        reports: {
+          path: '/dashboard/reports',
+          roles: ['logged', 'admin'],
+          frontendVisible: true,
+          icon: 'ListAlt',
+          page: 'DefaultPage',
+        },
+        settings: {
+          path: '/dashboard/settings',
+          roles: ['logged', 'admin'],
+          frontendVisible: true,
+          icon: 'SettingsOverscan',
+        },
+      },
+    },
+    admin: {
+      path: '/admin',
+      roles: ['admin'],
+      frontendVisible: true,
+      icon: 'AdminPanelSettings',
+      children: {
+        userManagement: {
+          path: '/admin/user-management',
+          roles: ['admin'],
+          frontendVisible: true,
+          icon: 'GroupAdd',
+          page: 'UserManagementPage',
+        },
+        strapi: {  
+          external: true,  // New attribute to indicate it's an external link  \\Link to external url (will be opened in new tab)
+          url: 'http://localhost:1337/admin',  \\ External URL to open
+          roles: ['admin'],
+          frontendVisible: true,
+          icon: 'OpenInNew',
+        },
+        apiDocs: {  
+          external: true,  // New attribute to indicate it's an external link
+          url: 'http://localhost:5000/api/apidocs',  \\ External URL to open
+          roles: ['admin'],
+          frontendVisible: true,
+          icon: 'OpenInNew',
+        },
+        pgAdmin: {
+          url: 'http://localhost:5050', \\ URL for pgAdmin
+          external: true,
+          frontendVisible: true,
+          roles: ['admin'],
+          icon: 'OpenInNew',
+        },
+      },
+    },
+    profile: {
+      path: '/profile',
+      roles: ['logged'],
+      frontendVisible: false,                   \\Page not visible or accessable from left menu
+      icon: 'AccountBox',
+      page: 'UserProfilePage',
+      children: null,
+    },
+    logout: {
+      path: '/logout',
+      roles: ['logged'],
+      frontendVisible: false,
+      icon: 'Logout',
+      children: null,
+    },
+  },
+};
+```

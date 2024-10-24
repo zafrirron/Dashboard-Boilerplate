@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "items_md",
+  "info": {
+    "singularName": "item-md",
+    "pluralName": "items-md",
+    "displayName": "item-md",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fieldName": {
+      "type": "string"
+    },
+    "columnIsVisible": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "columnIsEditable": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "pageas",
+  "info": {
+    "singularName": "pagea",
+    "pluralName": "pageas",
+    "displayName": "pagea",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pagea": {
+      "type": "customField",
+      "options": {
+        "output": "HTML",
+        "preset": "rich"
+      },
+      "customField": "plugin::ckeditor.CKEditor"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+# ========== Backend ============
 services:
   backend:
     build:
@@ -14,7 +15,7 @@ services:
       - app-network
     depends_on:
       - db
-
+# ========== Frontend ============
   frontend:
     build:
       context: ./frontend
@@ -26,13 +27,19 @@ services:
     env_file:
       - ./.env
     environment:
-      REACT_APP_BACKEND_API_URL: ${BACKEND_API_URL}
+      REACT_APP_BACKEND_API_URL: http://${BACKEND_HOST}:${BACKEND_PORT}
+      REACT_APP_APP_NAME: ${APP_NAME}
+      REACT_APP_STRAPI_AUTH_API: ${STRAPI_AUTH_API}
+      REACT_APP_STRAPI_HOST: localhost
+      REACT_APP_STRAPI_PORT: ${STRAPI_PORT}
+      REACT_APP_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+
     networks:
       - app-network
     depends_on:
       - backend
     command: /bin/sh -c "[ ! -L /usr/src/app/src/common ] && ln -s /usr/src/common /usr/src/app/src/common || true && npm install && npm start"
-
+# ========== DB ============
   db:
     image: postgres:13-alpine
     ports:
@@ -43,12 +50,12 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - postgres-data:/var/lib/postgresql/data  # Volume for persisting data
+      - ./postgres-data:/var/lib/postgresql/data  # Volume for persisting data
     env_file:
       - ./.env
     networks:
       - app-network
-
+# ========== Pgadmin ============
   pgadmin:
     image: dpage/pgadmin4:latest
     environment:
@@ -63,26 +70,47 @@ services:
       - "5050:80"
     depends_on:
       - db
+    env_file:
+      - ./.env
     networks:
       - app-network
-
+# ========== Strapi ============
   strapi:
-    image: strapi/strapi
+    build:
+      context: ./strapi
     container_name: strapi
     environment:
-      DATABASE_CLIENT: postgres
+      HOST: ${STRAPI_HOST}
+      PORT: ${STRAPI_PORT}
+      DATABASE_CLIENT: ${STRAPI_DB_CLIENT}
       DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      DATABASE_NAME: ${DB_NAME}
-      DATABASE_USERNAME: ${DB_USER}
-      DATABASE_PASSWORD: ${DB_PASSWORD}
+      DATABASE_PORT: ${DB_PORT}
+      DATABASE_NAME: ${STRAPI_DB_NAME}
+      DATABASE_USERNAME: ${STRAPI_DB_USERNAME}
+      DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD}
+      DATABASE_SSL: ${STRAPI_DATABASE_SSL}
+      APP_KEYS: ${STRAPI_APP_KEYS}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT}
+      JWT_SECRET: ${STRAPI_JWT_SECRET}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT}
+      NODE_ENV: ${NODE_ENV}
       # Optional: Set Strapi Admin email and password
       ADMIN_EMAIL: ${STRAPI_ADMIN_EMAIL}
       ADMIN_PASSWORD: ${STRAPI_ADMIN_PASSWORD}
+
     volumes:
-      - ./strapi-app:/srv/app  # Volume to persist Strapi app
+      - ./strapi:/srv/app  # Volume to persist Strapi app
+      - ./strapi/config:/opt/app/config
+      - ./strapi/src:/opt/app/src
+      - ./strapi/package.json:/opt/package.json
+      - ./strapi/yarn.lock:/opt/yarn.lock
+      # - ./.env:/opt/app/.env
+      - ./strapi/public/uploads:/opt/app/public/uploads
     ports:
       - "1337:1337"  # Strapi's default port
+    env_file:
+      - ./.env
     networks:
       - app-network
     depends_on:

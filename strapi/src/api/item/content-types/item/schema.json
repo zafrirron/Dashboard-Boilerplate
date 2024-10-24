@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "items",
+  "info": {
+    "singularName": "item",
+    "pluralName": "items",
+    "displayName": "item",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "maxLength": 10,
+      "minLength": 3,
+      "required": true
+    },
+    "itemid": {
+      "type": "integer",
+      "required": true,
+      "max": 9999,
+      "min": 0
+    },
+    "itemdate": {
+      "type": "date",
+      "required": true
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "options": {
+      "type": "enumeration",
+      "enum": [
+        "op1",
+        "op2",
+        "op3"
+      ]
+    }
+  }
+}

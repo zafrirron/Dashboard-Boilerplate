@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_html_page_as",
+  "info": {
+    "displayName": "page-a",
+    "icon": "grid"
+  },
+  "options": {},
+  "attributes": {
+    "pagea": {
+      "type": "customField",
+      "options": {
+        "output": "HTML",
+        "preset": "rich"
+      },
+      "customField": "plugin::ckeditor.CKEditor"
+    }
+  }
+}

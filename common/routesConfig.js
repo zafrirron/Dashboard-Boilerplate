@@ -9,6 +9,15 @@ module.exports = {
       page: 'HomePage',
       children: null,
     },
+    about: {
+      path: '/about',
+      roles: ['unlogged', 'logged'],
+      frontendVisible: true,
+      icon: 'Info',
+      page: 'StrapiMarkDownPage',
+      props: {componentName: 'about'},
+      children: null,
+    },
     login: {
       path: '/login',
       roles: ['unlogged'],
@@ -17,12 +26,22 @@ module.exports = {
       page: 'LoginPage',
       children: null,
     },
-    items: {
-      path: '/items',
-      roles: ['admin'],
+    orders: {
+      path: '/orders',
+      roles: ['logged'],
       frontendVisible: true,
       icon: 'List',
-      page: 'ItemsPage',
+      page: 'StrapiTablePage',
+      props: {tableName: 'Orders', collectionName:'orders', collectionTypeName: 'order', collectionMetaName: 'items-md'},
+      children: null,
+    },
+    pagea: {
+      path: '/pagea',
+      roles: ['logged'],
+      frontendVisible: true,
+      icon: 'Html',
+      page: 'StrapiHtmlPage',
+      props: {componentName:'pagea'},
       children: null,
     },
     dashboard: {
@@ -59,12 +78,12 @@ module.exports = {
           icon: 'GroupAdd',
           page: 'UserManagementPage',
         },
-        recordModel: {
-          path: '/admin/record-model',
+        strapi: {  
+          external: true,  // New attribute to indicate it's an external link
+          url: 'http://localhost:1337/admin',  // External URL to open
           roles: ['admin'],
           frontendVisible: true,
-          icon: 'AddCircleIcon',
-          page: 'RecordForm',
+          icon: 'OpenInNew',
         },
         apiDocs: {  
           external: true,  // New attribute to indicate it's an external link

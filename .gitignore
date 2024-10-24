@@ -30,3 +30,6 @@ dist/
 
 # pgadmin data
 pgadmin-data/*
+
+# postgress data
+postgres-data/*

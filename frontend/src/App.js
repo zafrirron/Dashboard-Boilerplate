@@ -26,6 +26,7 @@ const renderRoute = (route, role) => {
   }
 
   const Component = getPageComponent(route.page);
+  const { props: componentProps = {} } = route; 
 
   return (
     <Route
@@ -33,7 +34,7 @@ const renderRoute = (route, role) => {
       path={route.path}
       element={
         <Suspense fallback={<div>Loading...</div>}>
-          <Component />
+          <Component {...componentProps} />
         </Suspense>
       }
     />

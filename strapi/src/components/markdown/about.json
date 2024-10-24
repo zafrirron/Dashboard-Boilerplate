@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_markdown_abouts",
+  "info": {
+    "displayName": "about",
+    "icon": "question"
+  },
+  "options": {},
+  "attributes": {
+    "about": {
+      "type": "richtext"
+    }
+  }
+}
